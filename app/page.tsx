@@ -18,6 +18,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const whatsappUrl = "https://wa.me/905304902081";
+const brandName = "Gezici Sanat Atölyesi";
 const instagramUrl = "https://www.instagram.com/gezicisanatatolyesi/";
 const instagramHandle = "@gezicisanatatolyesi";
 const videoPath = "/media/atolye-video.mp4";
@@ -56,7 +57,7 @@ const forms = [
   "Yıldız formu",
   "Çiçek formu",
   "Vazo formu",
-  "Özgün hayal gücü formları",
+  "Özgün Kalp formu",
 ];
 
 const heroBenefits = [
@@ -134,10 +135,10 @@ export default function HomePage() {
               Yerinde kurulan mobil seramik deneyimi
             </div>
             <h1 className="font-serif text-5xl leading-[0.98] text-clay-950 sm:text-6xl lg:text-7xl">
-              Gezici Çömlekçi Çarkı Atölyesi
+              {brandName}
             </h1>
             <p className="mt-5 max-w-2xl text-xl font-semibold leading-relaxed text-terracotta-900 sm:text-2xl">
-              Çocuklar ve yetişkinler için yerinde kurulan yaratıcı seramik deneyimi
+              Gezici çömlekçi çarkı atölyesiyle yerinde kurulan yaratıcı seramik deneyimi
             </p>
             <p className="mt-6 max-w-2xl text-base leading-8 text-clay-800 sm:text-lg">
               Barış Özarıkça ve Hayri Ünal olarak seramik tornalarımız ve ekipmanlarımızla
@@ -300,7 +301,10 @@ export default function HomePage() {
             </a>
             <a href={instagramUrl} rel="noreferrer" target="_blank">
               <Instagram className="h-5 w-5" />
-              {instagramHandle}
+              <span>
+                Instagram’da bizi takip edin
+                <small>{instagramHandle}</small>
+              </span>
             </a>
             <a href={whatsappUrl} rel="noreferrer" target="_blank">
               <HeartHandshake className="h-5 w-5" />
@@ -310,7 +314,7 @@ export default function HomePage() {
               <a className="instagram-qr-card" href={instagramUrl} rel="noreferrer" target="_blank">
                 <img alt={`${instagramHandle} Instagram QR kodu`} src={instagramQrPath} />
                 <span>
-                  Instagram QR
+                  {brandName} Instagram
                   <small>{instagramHandle}</small>
                 </span>
               </a>
@@ -321,7 +325,7 @@ export default function HomePage() {
 
       <footer className="border-t border-terracotta-100 px-5 py-8 text-center text-sm text-clay-700">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 sm:flex-row">
-          <span>Barış Özarıkça & Hayri Ünal</span>
+          <span>{brandName} - Barış Özarıkça & Hayri Ünal</span>
           <span className="flex items-center gap-2">
             <MapPin className="h-4 w-4" />
             Gezici Çömlekçi Çarkı Atölyesi

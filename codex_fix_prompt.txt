@@ -1,0 +1,158 @@
+Mevcut çalışan Next.js sitesini bozma. Bu güncellemede marka adı, Instagram bilgileri, video bölümü ve 3D seramik animasyonlarını düzelt.
+
+ÖNEMLİ:
+- Eski portal/login/dashboard yapısını geri getirme.
+- public/galeri içindeki fotoğraflara dokunma.
+- public/media/atolye-video.mp4 dosyasını video kaynağı olarak kullan.
+- public/social/instagram-qr.png dosyası varsa iletişim bölümünde göster.
+- Build hatası bırakma.
+- npm run build çalıştır.
+- İş bitince SON_CIKTI.md dosyasını güncelle.
+
+1) MARKA VE INSTAGRAM GÜNCELLEMESİ
+
+Tüm projede eski Instagram veya marka referanslarını bul ve düzelt.
+
+Yeni marka görünen adı:
+Gezici Sanat Atölyesi
+
+Yeni Instagram kullanıcı adı:
+@gezicisanatatolyesi
+
+Yeni Instagram linki:
+https://www.instagram.com/gezicisanatatolyesi/
+
+Şunları yap:
+- Eski @gezicicomlek referanslarını kaldır.
+- Footer, iletişim, CTA, sosyal kart, QR alanı ve varsa metadata içinde yeni Instagram bilgisini kullan.
+- Link metni çirkin/raw görünmesin. Kullanıcıya güzel şekilde göster:
+  “Instagram’da bizi takip edin”
+  “@gezicisanatatolyesi”
+  “Gezici Sanat Atölyesi Instagram”
+- QR görseli varsa tıklanabilir olsun ve Instagram linkine gitsin.
+- Marka metinlerinde “Gezici Çömlekçi Çarkı Atölyesi” kullanılabilir ama ana sosyal/marka ismi “Gezici Sanat Atölyesi” olsun.
+
+2) VIDEO BÖLÜMÜNÜ DÜZELT
+
+Şu an video yok gibi görünüyor olabilir. Video dosyasının doğru yolu:
+public/media/atolye-video.mp4
+
+Site içinde video src şu olmalı:
+/media/atolye-video.mp4
+
+Yapılacak:
+- Video bölümü bu dosyayı kullansın.
+- out/video klasörüne bakma. out klasörü kaynak değildir.
+- Video varsa controls ile oynasın.
+- Mobil uyumlu olsun.
+- playsInline kullan.
+- İstersen preload="metadata" kullan.
+- Video yoksa site kırılmasın ama dosya varsa kesinlikle video yok mesajı göstermesin.
+
+3) HERO 3D SERAMİK TORNASI HESAP DÜZELTMESİ
+
+Mevcut hero’daki büyük 3D seramik form genel olarak iyi ama küçük bir hesap/oturma hatası var. Bunu bozmayacak şekilde düzelt.
+
+Önce ilgili dosyayı bul:
+- components/PotteryWheelHero.tsx
+veya hero’da Three.js kullanılan hangi dosya varsa onu incele.
+
+Düzeltilecekler:
+- Çamur formu tornanın merkezine tam otursun.
+- Taban zeminden kopuk veya gömülü görünmesin.
+- Form çok büyüyüp karttan taşmasın.
+- Kamera, object scale ve wheel pozisyonu uyumlu olsun.
+- 320px mobil genişlikte de taşma olmasın.
+- Eğer düzeltirken bozma riski varsa büyük refactor yapma; sadece hesap/pozisyon/scale düzelt.
+
+Teknik:
+- Resize cleanup korunsun.
+- requestAnimationFrame cleanup korunsun.
+- renderer/geometry/material dispose işlemleri korunsun.
+- Siyah sert gölge kullanma.
+- Beyaz çamur hissi korunsun.
+
+4) FORM KARTLARI / 6 FORM ANİMASYONU
+
+“Çarkta üretilebilen formlar” bölümünü daha doğru hale getir.
+
+Hedef:
+- 6 form: Çanak, Kap, Yıldız, Çiçek, Vazo, Özgün Kalp formu.
+- Mümkünse bu bölümde tek bir interaktif mini 3D seramik form alanı olsun.
+- Kullanıcı 6 butondan birine basınca dönen beyaz çamur formu o forma morph etsin.
+- Eğer mevcut kartları tamamen değiştirmek riskliyse, mevcut kartları koru ama üstte/yanında bir “Canlı Form Akışı” interaktif alanı ekle.
+
+Matematiksel ve görsel mantık:
+- Başlangıç: yüksek segmentli dönen silindir / beyaz çamur kütlesi.
+- Çanak: alt sabit, üst genişleyen parabolik bowl profili.
+- Kap: kulpsuz, daha dikey ve sade kap profili.
+- Yıldız: sadece üst boğumda polar koordinat mantığıyla r(theta)=a+b*cos(5theta) etkisi.
+- Çiçek: 6 yapraklı daha yumuşak sinüzoidal displacement.
+- Vazo: dar boyun, geniş gövde; y ekseni boyunca sinüs benzeri radius profili.
+- Kalp: üst çeperde kalp karakteri; alt taban stabil kalsın.
+
+Kritik kurallar:
+- Kod yazmadan önce kısa görünür plan oluştur ama gizli düşünce zinciri yazma.
+- Vertex hesaplarında clamp kullan; vertexlerin birbirine girmesini engelle.
+- Çok keskin kırılma veya aşırı poligon bükülmesi olmasın.
+- Eski mobil cihazları düşün; segment sayısını kalite/performans dengesinde tut.
+- 64x64 idealdir ama mobil performans için gerekirse daha kontrollü seç.
+- Deprecated Three.js API kullanma.
+- MeshStandardMaterial kullan.
+- Beyaz çamur hissi için roughness/metalness ayarlarını düzgün yap.
+- DirectionalLight + AmbientLight kullan.
+- Sert siyah gölge kullanma.
+- Mobilde yatay scroll oluşmasın.
+
+5) RESPONSIVE / MOBİL
+
+Kontrol et:
+- Hero mobilde taşmıyor mu?
+- Video mobilde düzgün mü?
+- Galeri bozuluyor mu?
+- Form bölümü 320px genişlikte kullanılabilir mi?
+- Butonlar parmakla rahat basılabilir mi?
+
+6) SON_CIKTI.md
+
+İş bitince proje kökünde SON_CIKTI.md dosyasını oluştur/güncelle.
+
+Format:
+
+# ✅ SON ÇIKTI RAPORU
+
+## Durum
+🟢 Build başarılı / 🔴 Build hatalı
+
+## Değiştirilen Dosyalar
+- ...
+
+## Eklenen Dosyalar
+- ...
+
+## Yapılan Ana Değişiklikler
+- ...
+
+## Beklenen Dosya Yolları
+- Video: public/media/atolye-video.mp4
+- Instagram QR: public/social/instagram-qr.png
+- Galeri fotoğrafları: public/galeri/*
+
+## Build Sonucu
+- ...
+
+## GitHub/Vercel Notu
+- ...
+
+## Sonraki Önerilen Adımlar
+- ...
+
+Terminalde iş başarılıysa en sona yeşil mesaj yaz:
+✅ İşlem tamamlandı. SON_CIKTI.md dosyasını ChatGPT’ye gönderebilirsin.
+
+7) BUILD
+
+Sonunda:
+npm run build
+
+Build hatası varsa düzeltmeden bırakma.

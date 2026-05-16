@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import InteractiveFormFlow from "./InteractiveFormFlow";
 import Reveal from "./Reveal";
 
 type FormCardsSectionProps = {
@@ -130,6 +131,9 @@ export default function FormCardsSection({ forms }: FormCardsSectionProps) {
       <Reveal className="section-heading">
         <p className="section-kicker">Ne yapıyoruz</p>
         <h2 className="section-title">Çarkta üretilebilen formlar</h2>
+      </Reveal>
+      <Reveal className="mb-8">
+        <InteractiveFormFlow />
       </Reveal>
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {forms.map((form, index) => (

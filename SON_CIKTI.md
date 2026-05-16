@@ -1,52 +1,56 @@
-# SON ÇIKTI RAPORU
+# ✅ SON ÇIKTI RAPORU
 
 ## Durum
 🟢 Build başarılı
 
 ## Değiştirilen Dosyalar
 - app/page.tsx
+- app/layout.tsx
 - app/globals.css
-- package.json
-- package-lock.json
-- components/AnimatedHero.tsx silindi
-
-## Eklenen Dosyalar
+- components/FormCardsSection.tsx
 - components/PotteryWheelHero.tsx
 - SON_CIKTI.md
 
+## Eklenen Dosyalar
+- components/InteractiveFormFlow.tsx
+
 ## Yapılan Ana Değişiklikler
-- Eski SVG tabanlı hero alanı kaldırıldı.
-- Three.js kullanan yeni `PotteryWheelHero` bileşeni eklendi.
-- Seramik tornası üzerinde beyaz çamurun dönen ve morphing yapan form animasyonu oluşturuldu.
-- Çamur formu silindirden çanağa, ardından üst ağız kısmında kalp karakterine yaklaşacak şekilde vertex manipulation ile güncelleniyor.
-- Three.js sahnesinde resize cleanup, requestAnimationFrame cleanup, renderer dispose, geometry/material dispose işlemleri eklendi.
-- `prefers-reduced-motion` durumunda animasyon hafifletildi.
-- `public/galeri` içindeki gerçek fotoğrafların galeriye otomatik dahil olması korundu.
-- `public/media/atolye-video.mp4` dosyasını kullanan responsive video bölümü eklendi.
-- Video dosyası yoksa siteyi kırmayan fallback metni eklendi.
-- Instagram kullanıcı adı ve linki `@gezicisanatatolyesi` olarak güncellendi.
-- Eski Instagram hesabı referansları temizlendi.
-- `public/social/instagram-qr.png` varsa iletişim alanında tıklanabilir QR kartı olarak gösterilecek koşullu alan eklendi.
-- Hero, video ve Instagram QR alanları için responsive Tailwind/CSS düzenlemeleri yapıldı.
-- `three` ve `@types/three` bağımlılıkları eklendi.
+- Görünen ana marka adı `Gezici Sanat Atölyesi` olarak güncellendi.
+- Metadata başlığı ve açıklaması yeni marka diliyle uyumlu hale getirildi.
+- Instagram linki ve kullanıcı adı `@gezicisanatatolyesi` olarak korundu ve daha okunabilir metinlerle gösterildi.
+- İletişim bölümündeki Instagram CTA metni `Instagram’da bizi takip edin` olarak düzenlendi.
+- QR görseli varsa tıklanabilir Instagram kartı olarak gösterilecek yapı korundu.
+- Video bölümü `/media/atolye-video.mp4` kaynağını kullanacak şekilde korundu.
+- Video dosyası yoksa site kırılmadan fallback metni göstermeye devam eder.
+- Büyük Three.js hero animasyonunda kamera, grup ölçeği, wheel pozisyonu ve radius clamp hesapları düzeltildi.
+- Çamur formunun tornaya daha dengeli oturması ve mobilde karttan taşmaması için pozisyon/scale ayarları sıkılaştırıldı.
+- `Çarkta üretilebilen formlar` bölümüne interaktif mini Three.js `Canlı Form Akışı` alanı eklendi.
+- 6 form seçeneği eklendi: Çanak, Kap, Yıldız, Çiçek, Vazo, Özgün Kalp.
+- Mini 3D formda seçilen butona göre beyaz çamur formu dönerken morph geçişi yapıyor.
+- Mini 3D form hesaplarında clamp, yumuşak geçiş, MeshStandardMaterial, AmbientLight ve DirectionalLight kullanıldı.
+- Responsive stiller 320px mobil genişlikte taşma riskini azaltacak şekilde güncellendi.
 
 ## Beklenen Dosya Yolları
-- Galeri görselleri: `public/galeri/*`
 - Video: `public/media/atolye-video.mp4`
 - Instagram QR: `public/social/instagram-qr.png`
+- Galeri fotoğrafları: `public/galeri/*`
 
 ## Build Sonucu
 - `npm run build` başarılı.
 - Next.js production build tamamlandı.
 - `/` sayfası statik olarak üretildi.
+- `public/media/atolye-video.mp4` mevcut değil; video alanı fallback metni gösterir.
+- `public/social/instagram-qr.png` mevcut değil; QR kartı gizlenir.
+- Son kopyalama denemesinde `out/video` içinde video bulunamadı; `public/media/atolye-video.mp4` dosyası oluşturulmadı.
 
 ## GitHub/Vercel Notu
-- Vercel deploy sırasında `npm install` ile `three` ve `@types/three` bağımlılıkları `package-lock.json` üzerinden kurulacaktır.
-- `public/media/atolye-video.mp4` ve `public/social/instagram-qr.png` dosyaları repoya eklenirse deploy çıktısında otomatik kullanılacaktır.
-- Bu iki dosya yoksa site kırılmaz; video alanında fallback metni görünür, QR kartı gizlenir.
+- `three` ve `@types/three` bağımlılıkları `package-lock.json` üzerinden kurulacaktır.
+- Video ve QR dosyaları beklenen yollara eklendiğinde Vercel deploy çıktısında otomatik kullanılacaktır.
+- `public/galeri` içindeki mevcut fotoğraflara dokunulmadı.
+- Boş klasörler Git tarafından takip edilmez; `public/media` ve `public/social` klasörlerinin deployda görünmesi için ilgili medya dosyalarını eklemek yeterlidir.
 
 ## Sonraki Önerilen Adımlar
 - `public/media/atolye-video.mp4` dosyasını ekleyin.
 - `public/social/instagram-qr.png` dosyasını ekleyin.
-- Mobil cihazlarda hero animasyonu ve video alanını gerçek cihazda görsel olarak kontrol edin.
-- `npm audit` çıktısındaki mevcut güvenlik uyarıları ayrıca değerlendirilebilir.
+- Mobil cihazda hero ve `Canlı Form Akışı` bölümlerini gerçek tarayıcıda kontrol edin.
+- İsterseniz video ve QR dosyaları eklendikten sonra tekrar build alıp deploy commit’i oluşturun.

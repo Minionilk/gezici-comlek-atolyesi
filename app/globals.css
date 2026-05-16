@@ -158,6 +158,42 @@ img {
     @apply relative mt-2 leading-7 text-clay-700;
   }
 
+  .form-flow-panel {
+    @apply grid gap-6 overflow-hidden rounded-[1.5rem] border border-terracotta-100 bg-[linear-gradient(145deg,#ffffff,#fff4e8)] p-4 shadow-xl shadow-clay-900/10 sm:rounded-[2rem] sm:p-6 lg:grid-cols-[0.88fr_1.12fr] lg:items-center;
+  }
+
+  .form-flow-copy {
+    @apply grid gap-4;
+  }
+
+  .form-flow-copy h3 {
+    @apply font-serif text-3xl leading-tight text-clay-950 sm:text-4xl;
+  }
+
+  .form-flow-copy p:not(.section-kicker) {
+    @apply max-w-xl leading-7 text-clay-700;
+  }
+
+  .form-flow-buttons {
+    @apply grid grid-cols-2 gap-2 sm:grid-cols-3;
+  }
+
+  .form-flow-buttons button {
+    @apply min-h-12 rounded-full border border-clay-200 bg-white px-3 py-2 text-sm font-extrabold text-clay-800 transition hover:border-terracotta-300 hover:bg-terracotta-50 focus:outline-none focus:ring-4 focus:ring-terracotta-200;
+  }
+
+  .form-flow-buttons button.is-active {
+    @apply border-terracotta-600 bg-terracotta-700 text-white shadow-lg shadow-terracotta-900/15;
+  }
+
+  .form-flow-canvas {
+    @apply h-[300px] w-full overflow-hidden rounded-[1.25rem] bg-[radial-gradient(circle_at_50%_24%,#ffffff_0,#fff7ec_48%,#ead5c0_100%)] sm:h-[360px] lg:h-[390px];
+  }
+
+  .form-flow-canvas canvas {
+    @apply block h-full w-full;
+  }
+
   .form-illustration {
     @apply relative z-10 h-44 w-full;
   }
@@ -298,6 +334,14 @@ img {
 
   .contact-links a {
     @apply flex min-h-14 items-center gap-3 rounded-2xl border border-clay-200 bg-sand-50 px-5 py-3 font-extrabold text-clay-900 transition hover:border-terracotta-300 hover:bg-terracotta-50 hover:text-terracotta-800;
+  }
+
+  .contact-links a span {
+    @apply grid gap-0.5;
+  }
+
+  .contact-links a small {
+    @apply break-all text-sm font-bold text-clay-700;
   }
 
   .contact-links svg {

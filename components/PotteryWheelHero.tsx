@@ -75,15 +75,19 @@ function updateClayShape(geometry: THREE.BufferGeometry, morph: number) {
       const lowerPoint = Math.max(-Math.sin(theta), 0) * 0.2;
       const notch = Math.exp(-Math.pow(theta - Math.PI / 2, 2) * 16) * 0.22;
       const heartContour = (lobe + lowerPoint - notch) * heartPhase * rimBand;
-      const radius = THREE.MathUtils.lerp(cylinderRadius, bowlRadius, bowlPhase) - neckTuck + rimWave + heartContour;
+      const radius = THREE.MathUtils.clamp(
+        THREE.MathUtils.lerp(cylinderRadius, bowlRadius, bowlPhase) - neckTuck + rimWave + heartContour,
+        0.36,
+        1.08,
+      );
       const rimLift = heartPhase * rimBand * (lobe * 0.12 - notch * 0.18);
       const wetThrowLines = Math.sin(v * 44 + theta * 1.4) * 0.009 * (0.35 + bowlPhase);
 
       position.setXYZ(
         index,
-        Math.cos(theta) * (radius + wetThrowLines),
+        Math.cos(theta) * THREE.MathUtils.clamp(radius + wetThrowLines, 0.34, 1.1),
         y + rimLift,
-        Math.sin(theta) * (radius + wetThrowLines),
+        Math.sin(theta) * THREE.MathUtils.clamp(radius + wetThrowLines, 0.34, 1.1),
       );
     }
   }
@@ -104,8 +108,8 @@ export default function PotteryWheelHero() {
     scene.background = new THREE.Color("#fff7ec");
 
     const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 100);
-    camera.position.set(0, 1.05, 5.1);
-    camera.lookAt(0, 0.22, 0);
+    camera.position.set(0, 0.95, 5.35);
+    camera.lookAt(0, 0.12, 0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
     renderer.setClearColor(0x000000, 0);
@@ -134,7 +138,7 @@ export default function PotteryWheelHero() {
       envMapIntensity: 0.7,
     });
     const clay = new THREE.Mesh(clayGeometry, clayMaterial);
-    clay.position.y = 0.18;
+    clay.position.y = 0.17;
     clay.castShadow = true;
     clay.receiveShadow = true;
     wheelGroup.add(clay);
@@ -145,7 +149,7 @@ export default function PotteryWheelHero() {
       roughness: 0.45,
     });
     const wheelTop = new THREE.Mesh(new THREE.CylinderGeometry(1.58, 1.68, 0.18, 96), wheelMaterial);
-    wheelTop.position.y = -0.78;
+    wheelTop.position.y = -0.77;
     wheelTop.castShadow = true;
     wheelTop.receiveShadow = true;
     wheelGroup.add(wheelTop);
@@ -177,6 +181,7 @@ export default function PotteryWheelHero() {
       const height = Math.max(rect.height, 300);
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
+      wheelGroup.scale.setScalar(width < 360 ? 0.84 : width < 520 ? 0.9 : 0.96);
       renderer.setSize(width, height, false);
     };
 

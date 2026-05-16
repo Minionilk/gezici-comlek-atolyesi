@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Gezici Çömlekçi Çarkı Atölyesi",
+  title: "Gezici Sanat Atölyesi | Gezici Çömlekçi Çarkı Atölyesi",
   description:
-    "Barış Özarıkça ve Hayri Ünal ile okullar, oteller, kurumlar ve etkinlikler için yerinde kurulan seramik çarkı deneyimi.",
+    "Gezici Sanat Atölyesi ile okullar, oteller, kurumlar ve etkinlikler için yerinde kurulan beyaz çamurlu seramik çarkı deneyimi.",
 };
 
 export default function RootLayout({
