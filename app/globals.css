@@ -52,7 +52,7 @@ img {
   }
 
   .hero-shell {
-    @apply relative mx-auto grid min-h-[92vh] max-w-7xl items-center gap-10 px-5 py-8 sm:px-8 lg:grid-cols-[1fr_0.92fr] lg:px-10;
+    @apply relative mx-auto grid min-h-[92vh] max-w-7xl items-center gap-8 px-5 py-8 sm:px-8 lg:grid-cols-[1fr_0.92fr] lg:gap-10 lg:px-10;
   }
 
   .eyebrow {
@@ -84,7 +84,7 @@ img {
   }
 
   .hero-art {
-    @apply relative mx-auto w-full max-w-[620px] rounded-[2.25rem] border border-white/80 bg-white/60 p-3 shadow-2xl shadow-clay-900/10 backdrop-blur;
+    @apply relative mx-auto w-full max-w-[620px] overflow-hidden rounded-[2rem] border border-white/80 bg-white/65 p-3 shadow-2xl shadow-clay-900/10 backdrop-blur sm:rounded-[2.25rem];
   }
 
   .hero-art::before {
@@ -97,8 +97,24 @@ img {
     content: "";
   }
 
-  .hero-svg {
-    @apply relative z-10 h-auto w-full rounded-[1.75rem] bg-[linear-gradient(145deg,#fffaf3,#f5e4d2_54%,#fffdf8)] p-3;
+  .pottery-hero {
+    @apply min-h-[320px] sm:min-h-[420px] lg:min-h-[520px];
+  }
+
+  .pottery-hero-canvas {
+    @apply relative z-10 h-[320px] w-full overflow-hidden rounded-[1.5rem] bg-[radial-gradient(circle_at_50%_26%,#ffffff_0,#fff7ec_40%,#ead4bf_100%)] sm:h-[420px] sm:rounded-[1.75rem] lg:h-[520px];
+  }
+
+  .pottery-hero-canvas canvas {
+    @apply block h-full w-full;
+  }
+
+  .pottery-hero-caption {
+    @apply pointer-events-none absolute inset-x-5 bottom-5 z-20 grid grid-cols-1 gap-2 text-xs font-extrabold uppercase tracking-[0.12em] text-clay-800 sm:grid-cols-3 sm:text-[0.7rem];
+  }
+
+  .pottery-hero-caption span {
+    @apply rounded-full border border-white/75 bg-white/70 px-3 py-2 text-center shadow-sm shadow-clay-900/5 backdrop-blur;
   }
 
   .hero-benefits-section {
@@ -123,12 +139,6 @@ img {
 
   .benefit-card p {
     @apply mt-1 leading-6 text-clay-700;
-  }
-
-  .wheel-roll {
-    animation: wheel-roll 2.8s linear infinite;
-    transform-box: fill-box;
-    transform-origin: center;
   }
 
   .feature-card {
@@ -234,6 +244,18 @@ img {
     @apply rounded-2xl border border-dashed border-clay-300 bg-white/70 p-10 text-center text-clay-700;
   }
 
+  .video-panel {
+    @apply overflow-hidden rounded-[1.5rem] border border-terracotta-100 bg-[linear-gradient(145deg,#fffdf8,#f5e6d6)] p-2 shadow-2xl shadow-clay-900/10 sm:rounded-[2rem] sm:p-3;
+  }
+
+  .video-panel video {
+    @apply aspect-video w-full rounded-[1.1rem] bg-clay-950 object-cover sm:rounded-[1.5rem];
+  }
+
+  .video-fallback {
+    @apply flex aspect-video min-h-56 items-center justify-center rounded-[1.1rem] border border-dashed border-clay-300 bg-white/70 p-6 text-center text-base font-bold leading-7 text-clay-700 sm:rounded-[1.5rem];
+  }
+
   .audience-grid {
     @apply grid gap-3 sm:grid-cols-2 lg:grid-cols-4;
   }
@@ -282,6 +304,22 @@ img {
     @apply shrink-0 text-terracotta-700;
   }
 
+  .contact-links .instagram-qr-card {
+    @apply items-center rounded-2xl bg-white p-4;
+  }
+
+  .instagram-qr-card img {
+    @apply h-20 w-20 shrink-0 rounded-xl border border-terracotta-100 bg-white object-contain p-1;
+  }
+
+  .instagram-qr-card span {
+    @apply grid gap-1;
+  }
+
+  .instagram-qr-card small {
+    @apply break-all text-sm font-bold text-clay-700;
+  }
+
   .lightbox {
     @apply fixed inset-0 z-50 flex items-center justify-center bg-clay-950/75 p-4 backdrop-blur-sm;
   }
@@ -296,12 +334,6 @@ img {
 
   .lightbox-close {
     @apply absolute right-4 top-4 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-clay-950 shadow-lg shadow-clay-950/15 transition hover:bg-terracotta-700 hover:text-white;
-  }
-}
-
-@keyframes wheel-roll {
-  to {
-    transform: rotate(360deg);
   }
 }
 

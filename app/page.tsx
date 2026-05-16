@@ -1,7 +1,7 @@
-import AnimatedHero from "@/components/AnimatedHero";
 import FAQSection from "@/components/FAQSection";
 import FormCardsSection from "@/components/FormCardsSection";
 import GallerySection from "@/components/GallerySection";
+import PotteryWheelHero from "@/components/PotteryWheelHero";
 import Reveal from "@/components/Reveal";
 import {
   CheckCircle2,
@@ -18,8 +18,20 @@ import fs from "node:fs";
 import path from "node:path";
 
 const whatsappUrl = "https://wa.me/905304902081";
+const instagramUrl = "https://www.instagram.com/gezicisanatatolyesi/";
+const instagramHandle = "@gezicisanatatolyesi";
+const videoPath = "/media/atolye-video.mp4";
+const instagramQrPath = "/social/instagram-qr.png";
 const galleryDirectory = path.join(process.cwd(), "public", "galeri");
 const imageExtensions = new Set([".jpg", ".jpeg", ".png", ".webp"]);
+
+function publicFileExists(publicPath: string) {
+  try {
+    return fs.existsSync(path.join(process.cwd(), "public", ...publicPath.split("/").filter(Boolean)));
+  } catch {
+    return false;
+  }
+}
 
 function getGalleryImages() {
   try {
@@ -109,6 +121,8 @@ const faqs = [
 
 export default function HomePage() {
   const galleryImages = getGalleryImages();
+  const hasWorkshopVideo = publicFileExists(videoPath);
+  const hasInstagramQr = publicFileExists(instagramQrPath);
 
   return (
     <main className="min-h-screen overflow-hidden bg-cream text-clay-950">
@@ -143,7 +157,7 @@ export default function HomePage() {
             </div>
           </Reveal>
 
-          <AnimatedHero />
+          <PotteryWheelHero />
         </div>
       </section>
 
@@ -231,6 +245,27 @@ export default function HomePage() {
 
       <GallerySection images={galleryImages} />
 
+      <section className="bg-white/70">
+        <div className="section-shell">
+          <Reveal className="section-heading">
+            <p className="section-kicker">Video</p>
+            <h2 className="section-title">Atölyeden Kısa Bir Video</h2>
+          </Reveal>
+          <Reveal className="video-panel">
+            {hasWorkshopVideo ? (
+              <video controls muted playsInline preload="metadata">
+                <source src={videoPath} type="video/mp4" />
+                Tarayıcınız video etiketini desteklemiyor.
+              </video>
+            ) : (
+              <div className="video-fallback">
+                Video dosyası eklendiğinde bu alanda atölyeden kısa bir kayıt gösterilecek.
+              </div>
+            )}
+          </Reveal>
+        </div>
+      </section>
+
       <section className="section-shell">
         <Reveal className="section-heading">
           <p className="section-kicker">Kimler için uygun</p>
@@ -263,14 +298,23 @@ export default function HomePage() {
               <Phone className="h-5 w-5" />
               0530 490 20 81
             </a>
-            <a href="https://www.instagram.com/gezicicomlek" rel="noreferrer" target="_blank">
+            <a href={instagramUrl} rel="noreferrer" target="_blank">
               <Instagram className="h-5 w-5" />
-              @gezicicomlek
+              {instagramHandle}
             </a>
             <a href={whatsappUrl} rel="noreferrer" target="_blank">
               <HeartHandshake className="h-5 w-5" />
               Etkinlik için teklif alın
             </a>
+            {hasInstagramQr ? (
+              <a className="instagram-qr-card" href={instagramUrl} rel="noreferrer" target="_blank">
+                <img alt={`${instagramHandle} Instagram QR kodu`} src={instagramQrPath} />
+                <span>
+                  Instagram QR
+                  <small>{instagramHandle}</small>
+                </span>
+              </a>
+            ) : null}
           </div>
         </div>
       </Reveal>
