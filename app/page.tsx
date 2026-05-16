@@ -138,7 +138,7 @@ export default function HomePage() {
               {brandName}
             </h1>
             <p className="mt-5 max-w-2xl text-xl font-semibold leading-relaxed text-terracotta-900 sm:text-2xl">
-              Gezici çömlekçi çarkı atölyesiyle yerinde kurulan yaratıcı seramik deneyimi
+              Gezici Sanat Atölyesi ile yerinde kurulan yaratıcı seramik deneyimi
             </p>
             <p className="mt-6 max-w-2xl text-base leading-8 text-clay-800 sm:text-lg">
               Barış Özarıkça ve Hayri Ünal olarak seramik tornalarımız ve ekipmanlarımızla
@@ -328,7 +328,7 @@ export default function HomePage() {
           <span>{brandName} - Barış Özarıkça & Hayri Ünal</span>
           <span className="flex items-center gap-2">
             <MapPin className="h-4 w-4" />
-            Gezici Çömlekçi Çarkı Atölyesi
+            {brandName}
           </span>
         </div>
       </footer>

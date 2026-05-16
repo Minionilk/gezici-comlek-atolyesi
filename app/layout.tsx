@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Gezici Sanat Atölyesi | Gezici Çömlekçi Çarkı Atölyesi",
+  title: "Gezici Sanat Atölyesi",
   description:
     "Gezici Sanat Atölyesi ile okullar, oteller, kurumlar ve etkinlikler için yerinde kurulan beyaz çamurlu seramik çarkı deneyimi.",
 };

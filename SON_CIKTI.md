@@ -21,7 +21,7 @@
 - İletişim bölümündeki Instagram CTA metni `Instagram’da bizi takip edin` olarak düzenlendi.
 - QR görseli varsa tıklanabilir Instagram kartı olarak gösterilecek yapı korundu.
 - Video bölümü `/media/atolye-video.mp4` kaynağını kullanacak şekilde korundu.
-- Video dosyası yoksa site kırılmadan fallback metni göstermeye devam eder.
+- Video dosyası yoksa site kırılmadan fallback metni göstermeye devam eder; kaynak olarak yalnızca `public/media/atolye-video.mp4` beklenir.
 - Büyük Three.js hero animasyonunda kamera, grup ölçeği, wheel pozisyonu ve radius clamp hesapları düzeltildi.
 - Çamur formunun tornaya daha dengeli oturması ve mobilde karttan taşmaması için pozisyon/scale ayarları sıkılaştırıldı.
 - `Çarkta üretilebilen formlar` bölümüne interaktif mini Three.js `Canlı Form Akışı` alanı eklendi.
@@ -41,7 +41,6 @@
 - `/` sayfası statik olarak üretildi.
 - `public/media/atolye-video.mp4` mevcut değil; video alanı fallback metni gösterir.
 - `public/social/instagram-qr.png` mevcut değil; QR kartı gizlenir.
-- Son kopyalama denemesinde `out/video` içinde video bulunamadı; `public/media/atolye-video.mp4` dosyası oluşturulmadı.
 
 ## GitHub/Vercel Notu
 - `three` ve `@types/three` bağımlılıkları `package-lock.json` üzerinden kurulacaktır.
