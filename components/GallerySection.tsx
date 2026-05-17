@@ -10,8 +10,14 @@ type GalleryImage = {
   src: string;
 };
 
+const initialVisibleCount = 6;
+const visibleStep = 6;
+
 export default function GallerySection({ images }: { images: GalleryImage[] }) {
   const [activeImage, setActiveImage] = useState<GalleryImage | null>(null);
+  const [visibleCount, setVisibleCount] = useState(initialVisibleCount);
+  const visibleImages = images.slice(0, visibleCount);
+  const hasMoreImages = visibleImages.length < images.length;
 
   return (
     <section className="section-shell" id="galeri">
@@ -21,22 +27,36 @@ export default function GallerySection({ images }: { images: GalleryImage[] }) {
       </Reveal>
 
       {images.length > 0 ? (
-        <div className="gallery-columns">
-          {images.map((image, index) => (
-            <motion.button
-              aria-label="Galeri fotoğrafını büyüt"
-              className="gallery-item group"
-              initial={{ opacity: 0, y: 34 }}
-              key={image.name}
-              onClick={() => setActiveImage(image)}
-              transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: (index % 8) * 0.05 }}
-              viewport={{ once: true, amount: 0.12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-            >
-              <img alt="Gezici Sanat Atölyesi seramik çarkı galeri fotoğrafı" src={image.src} />
-            </motion.button>
-          ))}
-        </div>
+        <>
+          <div className="gallery-columns">
+            {visibleImages.map((image, index) => (
+              <motion.button
+                aria-label="Galeri fotoğrafını büyüt"
+                className="gallery-item group"
+                initial={{ opacity: 0, y: 34 }}
+                key={image.name}
+                onClick={() => setActiveImage(image)}
+                transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: (index % 6) * 0.05 }}
+                viewport={{ once: true, amount: 0.12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+              >
+                <img alt="Gezici Sanat Atölyesi seramik çarkı galeri fotoğrafı" src={image.src} />
+              </motion.button>
+            ))}
+          </div>
+          <div className="gallery-more">
+            {hasMoreImages ? (
+              <button
+                onClick={() => setVisibleCount((count) => Math.min(count + visibleStep, images.length))}
+                type="button"
+              >
+                + Daha Fazla Göster
+              </button>
+            ) : (
+              <span>Tüm fotoğraflar gösterildi</span>
+            )}
+          </div>
+        </>
       ) : (
         <Reveal className="empty-gallery">
           Galeri klasöründe jpg, jpeg, png veya webp görsel bulunamadı.

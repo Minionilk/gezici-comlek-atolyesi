@@ -49,6 +49,23 @@ function createClayGeometry(radialSegments: number, heightSegments: number) {
   return geometry;
 }
 
+function fitCameraToGroup(camera: THREE.PerspectiveCamera, group: THREE.Group, width: number, height: number) {
+  const bounds = new THREE.Box3().setFromObject(group);
+  const center = bounds.getCenter(new THREE.Vector3());
+  const sphere = bounds.getBoundingSphere(new THREE.Sphere());
+  const aspect = width / height;
+  const verticalFov = THREE.MathUtils.degToRad(camera.fov);
+  const horizontalFov = 2 * Math.atan(Math.tan(verticalFov / 2) * aspect);
+  const fitFov = Math.min(verticalFov, horizontalFov);
+  const distance = (sphere.radius / Math.sin(fitFov / 2)) * 1.22;
+
+  camera.near = 0.01;
+  camera.far = Math.max(80, distance + sphere.radius * 8);
+  camera.position.set(center.x + distance * 0.66, center.y + distance * 0.46, center.z + distance * 0.66);
+  camera.lookAt(center.x, center.y - sphere.radius * 0.04, center.z);
+  camera.updateProjectionMatrix();
+}
+
 function updateClayShape(geometry: THREE.BufferGeometry, morph: number) {
   const position = geometry.getAttribute("position") as THREE.BufferAttribute;
   const radialSegments = 64;
@@ -60,10 +77,10 @@ function updateClayShape(geometry: THREE.BufferGeometry, morph: number) {
 
   for (let yIndex = 0; yIndex <= heightSegments; yIndex += 1) {
     const v = yIndex / heightSegments;
-    const y = v * 1.72 - 0.86;
-    const baseFoot = 0.46 + smoothstep(0, 0.2, v) * 0.16;
-    const cylinderRadius = 0.58 + Math.sin(v * Math.PI) * 0.035;
-    const bowlRadius = baseFoot + Math.pow(v, 0.72) * 0.62 + Math.sin(v * Math.PI) * 0.08;
+    const y = v * 1.5 - 0.75;
+    const baseFoot = 0.48 + smoothstep(0, 0.22, v) * 0.12;
+    const cylinderRadius = 0.6 + Math.sin(v * Math.PI) * 0.035;
+    const bowlRadius = baseFoot + Math.pow(v, 0.66) * 0.54 + Math.sin(v * Math.PI) * 0.1;
     const neckTuck = heartPhase * smoothstep(0.58, 0.86, v) * (1 - smoothstep(0.9, 1, v)) * 0.16;
     const rimBand = smoothstep(0.72, 1, v);
 
@@ -78,16 +95,16 @@ function updateClayShape(geometry: THREE.BufferGeometry, morph: number) {
       const radius = THREE.MathUtils.clamp(
         THREE.MathUtils.lerp(cylinderRadius, bowlRadius, bowlPhase) - neckTuck + rimWave + heartContour,
         0.36,
-        1.08,
+        1.16,
       );
       const rimLift = heartPhase * rimBand * (lobe * 0.12 - notch * 0.18);
       const wetThrowLines = Math.sin(v * 44 + theta * 1.4) * 0.009 * (0.35 + bowlPhase);
 
       position.setXYZ(
         index,
-        Math.cos(theta) * THREE.MathUtils.clamp(radius + wetThrowLines, 0.34, 1.1),
+        Math.cos(theta) * THREE.MathUtils.clamp(radius + wetThrowLines, 0.34, 1.17),
         y + rimLift,
-        Math.sin(theta) * THREE.MathUtils.clamp(radius + wetThrowLines, 0.34, 1.1),
+        Math.sin(theta) * THREE.MathUtils.clamp(radius + wetThrowLines, 0.34, 1.17),
       );
     }
   }
@@ -105,10 +122,10 @@ export default function PotteryWheelHero() {
 
     const reduceMotion = prefersReducedMotion();
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color("#fff7ec");
+    scene.background = new THREE.Color("#f0ddc8");
 
-    const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 100);
-    camera.position.set(3.6, 2.45, 3.8);
+    const camera = new THREE.PerspectiveCamera(40, 1, 0.01, 90);
+    camera.position.set(4, 2.75, 4);
     camera.lookAt(0, 0.02, 0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
@@ -160,16 +177,18 @@ export default function PotteryWheelHero() {
       const rect = mount.getBoundingClientRect();
       const width = Math.max(rect.width, 280);
       const height = Math.max(rect.height, 300);
-      camera.aspect = width / height;
-      camera.updateProjectionMatrix();
-      wheelGroup.scale.setScalar(width < 360 ? 0.84 : width < 520 ? 0.9 : 0.96);
+      wheelGroup.scale.setScalar(width < 360 ? 0.72 : width < 520 ? 0.8 : 0.86);
       renderer.setSize(width, height, false);
+      camera.aspect = width / height;
+      fitCameraToGroup(camera, wheelGroup, width, height);
     };
 
     const render = () => {
       const elapsed = clock.getElapsedTime();
       const morph = reduceMotion ? 0.72 : (Math.sin(elapsed * 0.58 - Math.PI / 2) + 1) / 2;
       updateClayShape(clayGeometry, morph);
+      clayGeometry.computeBoundingBox();
+      clayGeometry.computeBoundingSphere();
 
       clay.rotation.y += reduceMotion ? 0 : 0.024;
       wheelTop.rotation.y += reduceMotion ? 0 : 0.038;

@@ -7,36 +7,38 @@ const formOptions = [
   {
     id: "bowl",
     label: "Çanak",
-    description: "Çamur merkezlenir, üst kısım yavaşça açılarak geniş ağızlı çanak formu oluşturulur.",
+    description: "Geniş tabanlı, hacimli çanak formu.",
   },
   {
     id: "cup",
     label: "Kap",
-    description: "Çamur dikey yükseltilir, duvarlar sade ve kulpsuz küçük kap formuna getirilir.",
+    description: "Dengeli, sade küçük kap profili.",
   },
   {
     id: "star",
     label: "Yıldız",
-    description: "Üst çeper beş köşeli ritimde dışa-içe yönlendirilerek dekoratif yıldız etkisi verilir.",
+    description: "Gövde çanak kalır, üst çeper beş köşeli görünür.",
   },
   {
     id: "flower",
     label: "Çiçek",
-    description: "Üst kısım yumuşak dalgalarla altı yapraklı çiçek formuna yaklaştırılır.",
+    description: "Gövde çanak kalır, rim altı yumuşak yaprak taşır.",
   },
   {
     id: "vase",
     label: "Vazo",
-    description: "Gövde genişletilir, boyun kısmı daraltılır ve ağız dengeli biçimde açılır.",
+    description: "Geniş omuzlu, dar boyunlu vazo profili.",
   },
   {
     id: "heart",
     label: "Özgün Kalp formu",
-    description: "Üst çeper kalp karakterine yaklaşacak şekilde kıvrılır, alt taban tornada dengeli kalır.",
+    description: "Otomatik akış: çanak, çiçek, yıldız, kalp ve vazo.",
   },
 ] as const;
 
 type FormId = (typeof formOptions)[number]["id"];
+const showcaseForms: FormId[] = ["bowl", "flower", "star", "heart", "vase"];
+const formLabels = new Map<FormId, string>(formOptions.map((option) => [option.id, option.label]));
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
@@ -56,7 +58,7 @@ function createGeometry(radialSegments = 56, heightSegments = 48) {
 
     for (let xIndex = 0; xIndex <= radialSegments; xIndex += 1) {
       const theta = (xIndex / radialSegments) * Math.PI * 2;
-      positions.push(Math.cos(theta) * 0.5, v * 1.45 - 0.72, Math.sin(theta) * 0.5);
+      positions.push(Math.cos(theta) * 0.5, v * 1.32 - 0.66, Math.sin(theta) * 0.5);
     }
   }
 
@@ -77,24 +79,26 @@ function createGeometry(radialSegments = 56, heightSegments = 48) {
 }
 
 function radiusForForm(form: FormId, v: number, theta: number) {
-  const foot = 0.36 + smoothstep(0, 0.18, v) * 0.08;
-  const topBand = smoothstep(0.62, 1, v);
+  const foot = 0.4 + smoothstep(0, 0.2, v) * 0.14;
+  const rimBand = Math.pow(smoothstep(0.72, 1, v), 1.7);
   const belly = Math.sin(v * Math.PI);
+  const bowlBody = foot + Math.pow(v, 0.68) * 0.48 + belly * 0.1;
 
-  if (form === "bowl") return foot + Math.pow(v, 0.78) * 0.52 + belly * 0.06;
+  if (form === "bowl") return bowlBody;
   if (form === "cup") return 0.46 + smoothstep(0.2, 1, v) * 0.08 + belly * 0.025;
-  if (form === "star") return 0.47 + topBand * Math.cos(theta * 5) * 0.11 + belly * 0.03;
-  if (form === "flower") return 0.47 + topBand * Math.sin(theta * 6) * 0.09 + belly * 0.035;
+  if (form === "star") return bowlBody + rimBand * Math.cos(theta * 5) * 0.13;
+  if (form === "flower") return bowlBody + rimBand * Math.sin(theta * 6) * 0.1;
   if (form === "vase") {
     const shoulder = Math.exp(-Math.pow(v - 0.42, 2) * 9) * 0.28;
     const neck = smoothstep(0.68, 0.9, v) * 0.22;
     return 0.38 + shoulder - neck + smoothstep(0.9, 1, v) * 0.08;
   }
 
-  const lobes = Math.pow(Math.max(Math.sin(theta), 0), 2) * 0.22;
-  const point = Math.max(-Math.sin(theta), 0) * 0.12;
-  const notch = Math.exp(-Math.pow(theta - Math.PI / 2, 2) * 16) * 0.18;
-  return 0.45 + belly * 0.04 + topBand * (lobes + point - notch);
+  const wrapped = Math.atan2(Math.sin(theta - Math.PI / 2), Math.cos(theta - Math.PI / 2));
+  const lobes = Math.pow(Math.abs(Math.sin(theta)), 1.7) * 0.17;
+  const point = Math.max(-Math.sin(theta), 0) * 0.1;
+  const notch = Math.exp(-wrapped * wrapped * 18) * 0.24;
+  return bowlBody + rimBand * (lobes + point - notch);
 }
 
 function updateGeometry(geometry: THREE.BufferGeometry, fromForm: FormId, toForm: FormId, mix: number) {
@@ -105,16 +109,24 @@ function updateGeometry(geometry: THREE.BufferGeometry, fromForm: FormId, toForm
 
   for (let yIndex = 0; yIndex <= heightSegments; yIndex += 1) {
     const v = yIndex / heightSegments;
-    const y = v * 1.45 - 0.72;
+    const y = v * 1.32 - 0.66;
 
     for (let xIndex = 0; xIndex <= radialSegments; xIndex += 1) {
       const theta = (xIndex / radialSegments) * Math.PI * 2;
       const throwLine = Math.sin(v * 34 + theta * 1.2) * 0.006;
       const fromRadius = radiusForForm(fromForm, v, theta);
       const toRadius = radiusForForm(toForm, v, theta);
-      const radius = clamp(THREE.MathUtils.lerp(fromRadius, toRadius, mix) + throwLine, 0.28, 0.86);
-      const fromRimLift = fromForm === "heart" ? smoothstep(0.72, 1, v) * Math.sin(theta) * 0.035 : 0;
-      const toRimLift = toForm === "heart" ? smoothstep(0.72, 1, v) * Math.sin(theta) * 0.035 : 0;
+      const radius = clamp(THREE.MathUtils.lerp(fromRadius, toRadius, mix) + throwLine, 0.3, 1.06);
+      const heartLift = (form: FormId) => {
+        if (form !== "heart") return 0;
+        const wrapped = Math.atan2(Math.sin(theta - Math.PI / 2), Math.cos(theta - Math.PI / 2));
+        const topBand = smoothstep(0.72, 1, v);
+        const lobes = Math.pow(Math.abs(Math.sin(theta)), 1.6) * 0.04;
+        const notch = Math.exp(-wrapped * wrapped * 18) * 0.075;
+        return topBand * (lobes - notch);
+      };
+      const fromRimLift = heartLift(fromForm);
+      const toRimLift = heartLift(toForm);
       const rimLift = THREE.MathUtils.lerp(fromRimLift, toRimLift, mix);
 
       position.setXYZ(yIndex * row + xIndex, Math.cos(theta) * radius, y + rimLift, Math.sin(theta) * radius);
@@ -127,13 +139,18 @@ function updateGeometry(geometry: THREE.BufferGeometry, fromForm: FormId, toForm
 
 export default function InteractiveFormFlow() {
   const [selectedForm, setSelectedForm] = useState<FormId>("bowl");
+  const [showcaseForm, setShowcaseForm] = useState<FormId>("bowl");
   const selectedOption = formOptions.find((option) => option.id === selectedForm) ?? formOptions[0];
   const selectedFormRef = useRef<FormId>("bowl");
   const previousFormRef = useRef<FormId>("bowl");
   const morphProgressRef = useRef(1);
+  const autoShowcaseRef = useRef(false);
+  const showcaseIndexRef = useRef(0);
+  const showcaseLabelRef = useRef<FormId>("bowl");
   const mountRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    autoShowcaseRef.current = selectedForm === "heart";
     if (selectedFormRef.current !== selectedForm) {
       previousFormRef.current = selectedFormRef.current;
       morphProgressRef.current = 0;
@@ -146,10 +163,10 @@ export default function InteractiveFormFlow() {
     if (!mount) return undefined;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color("#fff8ef");
+    scene.background = new THREE.Color("#efe0cd");
 
-    const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
-    camera.position.set(2.75, 1.85, 3.05);
+    const camera = new THREE.PerspectiveCamera(40, 1, 0.01, 90);
+    camera.position.set(3.2, 2.2, 3.2);
     camera.lookAt(0, -0.08, 0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
@@ -187,16 +204,42 @@ export default function InteractiveFormFlow() {
       const rect = mount.getBoundingClientRect();
       const width = Math.max(rect.width, 260);
       const height = Math.max(rect.height, 280);
-      camera.aspect = width / height;
-      camera.updateProjectionMatrix();
-      group.scale.setScalar(width < 360 ? 0.86 : 0.96);
+      group.scale.setScalar(width < 360 ? 0.74 : width < 520 ? 0.82 : 0.9);
       renderer.setSize(width, height, false);
+      const bounds = new THREE.Box3().setFromObject(group);
+      const center = bounds.getCenter(new THREE.Vector3());
+      const sphere = bounds.getBoundingSphere(new THREE.Sphere());
+      const aspect = width / height;
+      const verticalFov = THREE.MathUtils.degToRad(camera.fov);
+      const horizontalFov = 2 * Math.atan(Math.tan(verticalFov / 2) * aspect);
+      const fitFov = Math.min(verticalFov, horizontalFov);
+      const distance = (sphere.radius / Math.sin(fitFov / 2)) * 1.28;
+      camera.aspect = aspect;
+      camera.near = 0.01;
+      camera.far = Math.max(80, distance + sphere.radius * 8);
+      camera.position.set(center.x + distance * 0.64, center.y + distance * 0.46, center.z + distance * 0.64);
+      camera.lookAt(center.x, center.y - sphere.radius * 0.05, center.z);
+      camera.updateProjectionMatrix();
     };
 
     const render = () => {
-      morphProgressRef.current = clamp(morphProgressRef.current + 0.035, 0, 1);
-      const easedMix = smoothstep(0, 1, morphProgressRef.current);
-      updateGeometry(geometry, previousFormRef.current, selectedFormRef.current, easedMix);
+      if (autoShowcaseRef.current) {
+        const elapsed = performance.now() * 0.001;
+        const segment = Math.floor(elapsed / 2.2) % showcaseForms.length;
+        const nextSegment = (segment + 1) % showcaseForms.length;
+        const localProgress = (elapsed / 2.2) % 1;
+        const easedMix = smoothstep(0, 1, localProgress);
+        updateGeometry(geometry, showcaseForms[segment], showcaseForms[nextSegment], easedMix);
+        if (showcaseIndexRef.current !== segment) {
+          showcaseIndexRef.current = segment;
+          showcaseLabelRef.current = showcaseForms[segment];
+          setShowcaseForm(showcaseForms[segment]);
+        }
+      } else {
+        morphProgressRef.current = clamp(morphProgressRef.current + 0.035, 0, 1);
+        const easedMix = smoothstep(0, 1, morphProgressRef.current);
+        updateGeometry(geometry, previousFormRef.current, selectedFormRef.current, easedMix);
+      }
       mesh.rotation.y += reducedMotion ? 0 : 0.026;
       wheel.rotation.y += reducedMotion ? 0 : 0.04;
       group.rotation.x = -0.03;
@@ -232,7 +275,11 @@ export default function InteractiveFormFlow() {
               aria-pressed={selectedForm === option.id}
               className={selectedForm === option.id ? "is-active" : ""}
               key={option.id}
-              onClick={() => setSelectedForm(option.id)}
+              onClick={() => {
+                autoShowcaseRef.current = option.id === "heart";
+                if (option.id !== "heart") setShowcaseForm(option.id);
+                setSelectedForm(option.id);
+              }}
               type="button"
             >
               {option.label}
@@ -240,7 +287,7 @@ export default function InteractiveFormFlow() {
           ))}
         </div>
         <div className="form-flow-description" aria-live="polite">
-          <strong>{selectedOption.label}</strong>
+          <strong>{selectedForm === "heart" ? `Özgün akış: ${formLabels.get(showcaseForm)}` : selectedOption.label}</strong>
           <p>{selectedOption.description}</p>
         </div>
       </div>

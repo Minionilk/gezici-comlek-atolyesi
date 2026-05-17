@@ -1,55 +1,51 @@
-# ✅ SON ÇIKTI RAPORU
+# SON CIKTI RAPORU
 
 ## Durum
-🟢 Build başarılı
+Build basarili.
 
-## Değiştirilen Dosyalar
-- .gitignore
+## Degistirilen Dosyalar
 - app/page.tsx
 - app/globals.css
-- components/FormCardsSection.tsx (kaldırıldı)
-- components/GallerySection.tsx
-- components/InteractiveFormFlow.tsx
-- components/Login.tsx
-- components/Navigation.tsx
 - components/PotteryWheelHero.tsx
-- hooks/useStore.ts
-- README.md
-- auto-update.bat
-- AUTO_PROMPT.txt
+- components/InteractiveFormFlow.tsx
+- components/GallerySection.tsx
 - SON_CIKTI.md
 
-## Eklenen Dosyalar
-- public/media/atolye-video.mp4 (mevcut video dosyası korundu)
+## Ana Duzeltmeler
+- Hero ve Canli Form Akisi arka planlari daha sicak kahve, bej ve seramik tonuna cekildi; beyaz camur rengi korundu.
+- Hero ve Canli Form Akisi Three.js kameralarinda `near`, `far`, FOV, kamera mesafesi ve `lookAt` yeniden ayarlandi.
+- Kamera mesafesi obje sinir kutusu ve sinir kuresi uzerinden hesaplanarak mobil ve masaustu kirpilma riski azaltildi.
+- Canli Form Akisi formlari genis canak govdesi uzerine kuruldu; yildiz, cicek ve kalp etkisi yalnizca ust rim bolgesinde belirginlestirildi.
+- Ozgun Kalp formu otomatik showcase moduna baglandi: Canak -> Cicek -> Yildiz -> Kalp -> Vazo dongusu surekli calisir.
+- Kullanici baska bir form butonuna bastiginda otomatik dongu kapanir ve secilen forma gecilir.
+- Canli Form Akisi aciklama kutusu korundu, metinler kisaltildi.
+- Galeri ilk acilista 6 gorsel gosterir; `+ Daha Fazla Goster` butonu her tiklamada 6 gorsel daha ekler.
+- Marka adi `Gezici Sanat Atölyesi`, Instagram hesabi `@gezicisanatatolyesi`, Instagram linki `https://www.instagram.com/gezicisanatatolyesi/` olarak korundu.
 
-## Yapılan Ana Değişiklikler
-- Marka adı her yerde `Gezici Sanat Atölyesi` olarak kullanıldı.
-- Eski portal başlıklarında kalan genel seramik atölyesi adları yeni marka adıyla değiştirildi.
-- Instagram kullanıcı adı ve linki `@gezicisanatatolyesi` ve `https://www.instagram.com/gezicisanatatolyesi/` olarak ayarlandı.
-- Video kaynağı kesin olarak `/media/atolye-video.mp4` yapıldı; dosya mevcut olduğu için video fallback mesajı gösterilmez.
-- `public/galeri` içindeki desteklenen tüm görseller galeriye dahil edildi.
-- Hero etiketleri mobilde görselin üstüne binmeyecek şekilde animasyonun altına ayrı satır olarak yerleştirildi.
-- Hero ve Canlı Form Akışı Three.js kamera açıları yaklaşık 45 derece hissi verecek şekilde güncellendi.
-- Canlı Form Akışı bölümünde form seçimine göre kısa üretim açıklaması gösteriliyor.
-- Eski alttaki form kartları bölümü kaldırıldı; `Özgün Kalp formu` metni kullanıldı.
-- Sert koyu gölge ve koyu video zemini yumuşatıldı; beyaz çamur hissi korundu.
-- Mobil yerleşim ve 320px yatay taşma riski için ana boşluklar ve buton metinleri düzenlendi.
-- `out` klasörü kaynak olarak kullanılmadı; kaynaklar `public` altında tutuldu.
+## Matematiksel / Gorsel Mantik Ozeti
+- Kamera gorunurlugu `near < objeMesafesi < far` kosuluna gore genisletildi; `near=0.01`, `far` ise sinir kuresine gore guvenli ust degere alindi.
+- FOV 40 dereceye cekildi; kamera yaklasik 45 derece hissi icin X/Z simetrik, Y orta-yuksek konumlandirildi.
+- Obje ekrana sigdirma hesabinda dikey ve yatay FOV icinden daha dar olan aci secildi: `distance = radius / sin(fov / 2) * margin`.
+- Form govdelerinde taban stabil tutuldu, hacim `bowlBody = foot + pow(v, 0.68) * genisleme + sin(v*pi) * karın` profiliyle verildi.
+- Yildiz riminde `cos(5theta)`, cicek riminde `sin(6theta)`, kalp riminde lob, alt nokta ve ust centik bilesenleri kullanildi.
+- Rim deformasyonlari `smoothstep(0.72, 1, v)` ile sadece ust ceperde etkili olacak sekilde sinirlandi.
 
-## Beklenen Dosya Yolları
-- Video: public/media/atolye-video.mp4
-- Galeri: public/galeri/*
-- Instagram: https://www.instagram.com/gezicisanatatolyesi/
+## Galeri Durumu
+- Kaynak klasor kesin olarak `public/galeri`.
+- `public/galeri` icinde 10 desteklenen gorsel var.
+- `out/galeri` icinde olup `public/galeri` icinde olmayan gorseller build sirasinda guvenli sekilde `public/galeri` altina kopyalanacak.
+- Site `out/galeri` klasorunu kaynak olarak kullanmaz.
+
+## Video Durumu
+- Video yolu kesin olarak `/media/atolye-video.mp4`.
+- `public/media/atolye-video.mp4` mevcut.
+- Dosya mevcut oldugu icin sayfada "video yok" mesaji gosterilmez.
 
 ## Build Sonucu
-- `npm run build` başarıyla tamamlandı.
-- Next.js üretim derlemesi, tip kontrolü ve statik export adımları başarılı.
+- `npm run build` calistirildi.
+- Next.js derleme, TypeScript kontrolu ve statik export basarili tamamlandi.
 
-## Canlı Site
+## Canli Site Linki
 https://gezici-comlek-atolyesi.vercel.app
-
-## Sonraki Önerilen Adımlar
-- Deploy sonrası 320px mobil genişlikte gerçek cihaz kontrolü yapılabilir.
-- Yeni galeri fotoğrafları doğrudan `public/galeri` içine eklenmelidir.
 
 GUNCELLEME_TAMAMLANDI=TRUE

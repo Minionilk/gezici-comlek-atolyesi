@@ -37,7 +37,7 @@ img {
 
 @layer components {
   .hero-section {
-    @apply relative border-b border-terracotta-100/80 bg-[radial-gradient(circle_at_16%_12%,#f6d3b7_0,#fff4e8_32%,#fffaf3_72%)];
+    @apply relative border-b border-terracotta-100/80 bg-[radial-gradient(circle_at_16%_12%,#e7bea0_0,#efe0cf_36%,#f8efe4_76%)];
   }
 
   .hero-section::before {
@@ -103,7 +103,7 @@ img {
   }
 
   .pottery-hero-canvas {
-    @apply relative z-10 h-[320px] w-full overflow-hidden rounded-[1.5rem] bg-[radial-gradient(circle_at_50%_26%,#ffffff_0,#fff7ec_40%,#ead4bf_100%)] sm:h-[420px] sm:rounded-[1.75rem] lg:h-[520px];
+    @apply relative z-10 h-[340px] w-full overflow-hidden rounded-[1.5rem] bg-[radial-gradient(circle_at_50%_26%,#fffdf8_0,#efe1d0_46%,#d9bfa5_100%)] sm:h-[440px] sm:rounded-[1.75rem] lg:h-[540px];
   }
 
   .pottery-hero-canvas canvas {
@@ -160,7 +160,7 @@ img {
   }
 
   .form-flow-panel {
-    @apply grid gap-6 overflow-hidden rounded-[1.5rem] border border-terracotta-100 bg-[linear-gradient(145deg,#ffffff,#fff4e8)] p-4 shadow-md shadow-terracotta-900/10 sm:rounded-[2rem] sm:p-6 lg:grid-cols-[0.88fr_1.12fr] lg:items-center;
+    @apply grid gap-6 overflow-hidden rounded-[1.5rem] border border-terracotta-100 bg-[linear-gradient(145deg,#fffaf2,#ead6c1)] p-4 shadow-md shadow-terracotta-900/10 sm:rounded-[2rem] sm:p-6 lg:grid-cols-[0.88fr_1.12fr] lg:items-center;
   }
 
   .form-flow-copy {
@@ -200,7 +200,7 @@ img {
   }
 
   .form-flow-canvas {
-    @apply h-[300px] w-full overflow-hidden rounded-[1.25rem] bg-[radial-gradient(circle_at_50%_24%,#ffffff_0,#fff7ec_48%,#ead5c0_100%)] sm:h-[360px] lg:h-[390px];
+    @apply h-[320px] w-full overflow-hidden rounded-[1.25rem] bg-[radial-gradient(circle_at_50%_24%,#fffdf8_0,#efe0cd_50%,#d8bea4_100%)] sm:h-[380px] lg:h-[420px];
   }
 
   .form-flow-canvas canvas {
@@ -287,6 +287,18 @@ img {
 
   .gallery-item img {
     @apply h-auto w-full rounded-xl object-contain transition duration-500 group-hover:scale-[1.035];
+  }
+
+  .gallery-more {
+    @apply mt-8 flex justify-center text-center;
+  }
+
+  .gallery-more button {
+    @apply inline-flex min-h-12 items-center justify-center rounded-full border border-terracotta-200 bg-white px-6 py-3 text-base font-extrabold text-terracotta-800 shadow-sm shadow-clay-900/5 transition duration-300 hover:-translate-y-0.5 hover:border-terracotta-400 hover:bg-terracotta-50 focus:outline-none focus:ring-4 focus:ring-terracotta-200;
+  }
+
+  .gallery-more span {
+    @apply rounded-full border border-clay-200 bg-white/75 px-5 py-3 text-sm font-bold text-clay-700;
   }
 
   .empty-gallery {

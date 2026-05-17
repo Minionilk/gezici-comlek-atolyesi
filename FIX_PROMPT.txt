@@ -1,0 +1,111 @@
+Bu projede soru sorma, onay isteme, "devam edeyim mi" deme. Kullanıcı her şeyi onaylamış kabul et. Gerçek dosya değişikliklerini uygula.
+
+ÖNCE KISA MATEMATİKSEL PLAN YAZ:
+1. Neden 3D formlar yarıdan sonra kayboluyor olabilir?
+2. Kamera near/far, FOV, object scale, object center ve canvas overflow hesabını nasıl düzelteceksin?
+3. Kalp, yıldız ve çiçek formlarını neden ince uzun değil, çanak gibi geniş tabanlı yapacaksın?
+4. Kalp formunda üst rim hangi matematikle kalp karakteri alacak?
+5. Özgün çalışma modunda formlar arasında otomatik geçiş nasıl yapılacak?
+6. Galeride ilk kaç görsel gösterilecek, + butonuyla kaç görsel eklenecek?
+
+SONRA UYGULA.
+
+YAPILACAKLAR:
+
+1. Hero ve Canlı Form Akışı animasyonlarında arka plan çok açık kalıyor. Arka planı biraz daha sıcak kahve / bej / seramik tonu yap. Beyaz çamur görünümü korunacak.
+
+2. 3D ürünler belli bir görünmez duvardan geçiyor gibi yarıdan sonra kayboluyor. Bunu düzelt:
+- camera near/far değerlerini kontrol et
+- FOV değerini düzelt
+- camera position ve lookAt değerlerini yeniden ayarla
+- geometriyi merkeze oturt
+- object scale değerlerini güvenli aralığa al
+- container / canvas overflow kırpmasını kontrol et
+- mobilde de kırpılma olmasın
+
+3. Hero animasyonundaki kamera açısı yaklaşık 45 derece kalsın ama ürün kırpılmasın.
+
+4. Canlı Form Akışı bölümündeki kamera açısı yaklaşık 45 derece kalsın ama ürün kırpılmasın.
+
+5. Çanak, Yıldız, Çiçek ve Özgün Kalp formları ince uzun görünmesin. Bunların gövdesi çanak gibi geniş ve hacimli olsun. Form efekti üst rim / üst çeperde görünsün.
+
+6. Kalp formunda üst taraf gerçekten kalp karakteri alsın:
+- Alt taban stabil kalsın
+- Gövde çanak gibi geniş kalsın
+- Sadece üst çeper kalp rim formuna yaklaşsın
+- Kalp seçilince açıkça anlaşılır olsun
+
+7. Yıldız formu:
+- Gövde çanak gibi geniş kalsın
+- Üst çeperde 5 köşeli yıldız etkisi görünsün
+- Form ince uzun silindir olmasın
+
+8. Çiçek formu:
+- Gövde çanak gibi geniş kalsın
+- Üst çeperde 6 yapraklı yumuşak çiçek etkisi görünsün
+- Form ince uzun silindir olmasın
+
+9. Özgün Kalp formu seçildiğinde otomatik showcase çalışsın:
+- Çanak -> Çiçek -> Yıldız -> Kalp -> Vazo arasında akıcı geçiş yapsın
+- Bu geçiş sürekli döngü şeklinde olsun
+- Kullanıcı başka butona basınca otomatik döngü dursun ve seçilen forma geçsin
+
+10. Canlı Form Akışı bölümündeki açıklama kutusu kalsın. Metinleri kısa ve düzgün yap.
+
+11. Eski alttaki form kartları bölümü kaldırılmışsa geri getirme.
+
+12. Galeriye görseller eklenmemiş görünüyor. Galerinin kaynak klasörü kesin olarak public/galeri olsun. public/galeri içindeki tüm görselleri otomatik listele.
+
+13. Eğer out/galeri içinde olup public/galeri içinde olmayan görseller varsa güvenli şekilde public/galeri içine kopyala. Ama sitede kaynak yine public/galeri olsun.
+
+14. Galeri çok yer kaplamasın:
+- İlk açılışta sınırlı sayıda görsel göster
+- Altına "+ Daha Fazla Göster" butonu koy
+- Butona basıldıkça yeni görseller gelsin
+- Tüm görseller bitince buton gizlensin veya "Tüm fotoğraflar gösterildi" yazsın
+- Mobil uyumlu olsun
+
+15. Video yolu kesin olarak /media/atolye-video.mp4 olsun.
+- public/media/atolye-video.mp4 varsa video görünsün
+- Dosya varsa "video yok" yazısı gösterme
+
+16. Marka adı her yerde "Gezici Sanat Atölyesi" olsun.
+17. Instagram her yerde "@gezicisanatatolyesi" olsun.
+18. Instagram linki her yerde "https://www.instagram.com/gezicisanatatolyesi/" olsun.
+
+TEKNİK KURALLAR:
+- Next.js / TypeScript hatası bırakma
+- requestAnimationFrame cleanup koru
+- resize cleanup koru
+- renderer / geometry / material dispose işlemlerini koru
+- public/galeri dosyalarını silme
+- public/media dosyasını silme
+- out klasörünü kaynak yapma
+- Gereksiz büyük refactor yapma
+- Çalışan tasarımı bozma
+
+MUHTEMEL DOSYALAR:
+- app/page.tsx
+- app/globals.css
+- components/PotteryWheelHero.tsx
+- components/InteractiveFormFlow.tsx
+- components/GallerySection.tsx
+- components/Navigation.tsx
+- components/Login.tsx
+- hooks/useStore.ts
+
+İŞ BİTİNCE:
+1. npm run build çalıştır
+2. Build hatası varsa düzelt
+3. SON_CIKTI.md dosyasını güncelle
+4. SON_CIKTI.md içinde şunlar olsun:
+- Değiştirilen dosyalar
+- Ana düzeltmeler
+- Matematiksel / görsel mantık özeti
+- Galeri durumu
+- Video durumu
+- Build sonucu
+- Canlı site linki: https://gezici-comlek-atolyesi.vercel.app
+
+En sona şu satırı ekle:
+GUNCELLEME_TAMAMLANDI=TRUE
