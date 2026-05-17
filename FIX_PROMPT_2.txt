@@ -1,0 +1,160 @@
+Bu projede soru sorma, onay isteme, bekleme. Kullanıcı her şeyi onayladı kabul et. Gerçek dosya değişikliklerini uygula.
+
+ÖNCE KISA MATEMATİKSEL PLAN YAZ, SONRA UYGULA.
+
+ANA SORUNLAR:
+1. 3D formların arkaları görünmüyor. Muhtemelen mesh tek yüzlü, backface culling var veya rim/geometri tam kapanmıyor.
+2. Kalp formu üstte kalp gibi okunmuyor.
+3. Kap formu tam oluşmuyor.
+4. Yıldız, çiçek ve kalp formları ince uzun oluyor; bunlar çanak gibi geniş gövdeli olmalı.
+5. Galeri görselleri public/galeri içine eklenmesine rağmen sitede tam görünmüyor.
+6. Galeri alanı fazla uzamasın; + butonu ile yeni fotoğraflar açılsın.
+
+MATEMATİKSEL / GEOMETRİ PLANI:
+
+A) Arkası görünmeyen mesh sorunu:
+- MeshStandardMaterial içinde side: THREE.DoubleSide kullan.
+- Sadece DoubleSide yetmezse geometriyi 360 derece kapalı üret.
+- theta 0..2π aralığında tam dönmeli.
+- Son kolon ilk kolonla aynı konuma bağlanmalı.
+- Normal hesapları bozuluyorsa geometry.computeVertexNormals() çağır.
+- Üst rim açık kalıyorsa ağız çeperinde küçük kalınlık / iç yüzey etkisi oluştur.
+- Aynalama hilesi: ön tarafta hesaplanan rim deformasyonu arka tarafta da simetrik çalışmalı. Bunun için polar theta bazlı tam çevre formülü kullan. Sadece x tarafını değil x-z düzleminde tam kapalı şekli hesapla.
+
+B) Çanak tabanlı geniş kütle:
+- y normalize: t = y / height, 0 taban, 1 üst.
+- baseRadius düşük ama sıfır değil.
+- bowlRadius = base + curve * pow(t, 1.6)
+- üstte geniş, altta stabil olacak.
+- yıldız/çiçek/kalp formlarında gövde ana profili bowlRadius olacak.
+- efekti sadece topBand = smoothstep(0.62, 1.0, t) ile üst çepere uygula.
+- Böylece form ince uzun silindir olmaz.
+
+C) Kap formu:
+- Kap gövdesi çanak kadar açılmasın ama ince silindir de olmasın.
+- radius = base + linearGrow * t + slightLip * smoothstep(0.82, 1.0, t)
+- taban stabil, üst hafif dışa açık.
+
+D) Yıldız formu:
+- Ana gövde çanak gibi geniş olacak.
+- Üst rimde 5 köşe:
+  starWave = cos(5 * theta)
+  rimFactor = 1 + topBand * 0.16 * starWave
+- Keskinlik çok artmasın, clamp kullan:
+  rimFactor = clamp(rimFactor, 0.82, 1.20)
+
+E) Çiçek formu:
+- Ana gövde çanak gibi geniş olacak.
+- Üst rimde 6 yaprak:
+  flowerWave = sin(6 * theta)
+  rimFactor = 1 + topBand * 0.12 * flowerWave
+- Daha yumuşak olsun:
+  wave = sin(6theta) * 0.7 + sin(12theta) * 0.15
+- clamp ile taşmayı engelle.
+
+F) Kalp formu:
+- Alt gövde çanak gibi geniş kalacak.
+- Sadece üst çeperde kalp etkisi olacak.
+- Heart parametreleri:
+  hx = 16 * sin(u)^3
+  hz = 13*cos(u) - 5*cos(2u) - 2*cos(3u) - cos(4u)
+- Bu değerleri normalize et:
+  hxNorm = hx / maxAbsX
+  hzNorm = hz / maxAbsZ
+- Rim için polar theta ile kapalı kalp konturu üret.
+- Mevcut dairesel rim noktası ile kalp rim noktası arasında interpolate yap:
+  finalX = lerp(circleX, heartX, topBand * heartStrength)
+  finalZ = lerp(circleZ, heartZ, topBand * heartStrength)
+- Kalp üstte net okunmalı ama gövde kopmamalı.
+- Kalp formu seçildiğinde kamera açısından üst çeperde kalp karakteri anlaşılır olmalı.
+- Back side yine görünmeli; DoubleSide + kapalı geometri şart.
+
+G) Özgün Kalp formu / otomatik showcase:
+- Özgün Kalp formu seçilince sürekli tek formda donmasın.
+- Çanak -> Çiçek -> Yıldız -> Kalp -> Vazo arasında otomatik morph döngüsü yapsın.
+- Her geçiş 2.5-3 saniye arası akıcı olsun.
+- Kullanıcı başka butona basarsa otomatik döngü dursun.
+- Özgün Kalp butonuna tekrar basılırsa showcase yeniden başlasın.
+
+H) Kamera / clipping:
+- Kamera yaklaşık 45 derece kalsın.
+- Objeler kırpılmasın.
+- camera.near çok yüksek olmasın: 0.1 civarı.
+- camera.far yeterli olsun: 100 veya üstü.
+- camera.position örnek: x 3.6, y 2.4, z 4.2 gibi dengeli.
+- camera.lookAt(0, 0.45, 0) kullan.
+- geometry center / scale kontrolü yap.
+- Canvas container overflow hidden olabilir ama mesh görünür alanda kalmalı.
+- Renderer resize sonrası camera.aspect ve camera.updateProjectionMatrix çağrılmalı.
+
+UYGULANACAK İŞLER:
+
+1. components/PotteryWheelHero.tsx dosyasını incele.
+- Arka planı biraz daha kahve/bej yap.
+- Mesh arkası görünür olsun.
+- DoubleSide kullan.
+- Gerekirse geometriyi kapalı üret.
+- Ürün yarıdan sonra kaybolmasın.
+- Kamera 45 derece civarında kalsın.
+- Beyaz çamur hissi korunsun.
+
+2. components/InteractiveFormFlow.tsx dosyasını incele.
+- Çanak, Kap, Yıldız, Çiçek, Vazo, Özgün Kalp formlarının matematiğini yukarıdaki plana göre düzelt.
+- Yıldız, çiçek, kalp formları ince uzun değil, geniş çanak gövdeli olsun.
+- Kap formu gerçekten kap gibi oluşsun.
+- Kalp üst rimde net kalp karakteri alsın.
+- Arkası görünmeyen formlar için DoubleSide ve kapalı geometri uygula.
+- Özgün Kalp formunda otomatik morph showcase yap.
+- Açıklama metinleri kısa ve düzgün kalsın.
+
+3. components/GallerySection.tsx dosyasını düzelt.
+- Galeri kaynağı public/galeri olsun.
+- public/galeri içindeki tüm .jpg, .jpeg, .png, .webp dosyalarını galeri listesine dahil et.
+- Eğer mevcut yapı sabit array kullanıyorsa, public/galeri içindeki dosya isimlerini okuyup array’i güncelle.
+- İlk açılışta 9 veya 12 görsel göster.
+- Altına "+ Daha Fazla Göster" butonu ekle.
+- Her basışta 6 veya 9 yeni görsel açılsın.
+- Tüm görseller bitince buton gizlensin veya "Tüm fotoğraflar gösterildi" yazsın.
+- Galeri mobilde düzgün gözüksün.
+
+4. Eğer public/galeri eksikse ama out/galeri içinde fotoğraf varsa:
+- out/galeri içindekileri public/galeri içine kopyala.
+- Ama kodda kaynak olarak out kullanma.
+
+5. Video:
+- Video yolu /media/atolye-video.mp4 olsun.
+- public/media/atolye-video.mp4 varsa video göster.
+- Dosya varsa video yok mesajı gösterme.
+
+6. Marka:
+- Her yerde "Gezici Sanat Atölyesi" kullan.
+- Instagram: @gezicisanatatolyesi
+- Link: https://www.instagram.com/gezicisanatatolyesi/
+
+TEKNİK KURALLAR:
+- Next.js / TypeScript hatası bırakma.
+- Deprecated Three.js API kullanma.
+- requestAnimationFrame cleanup koru.
+- resize cleanup koru.
+- renderer, geometry, material dispose işlemlerini koru.
+- public/galeri ve public/media dosyalarını silme.
+- out klasörünü kaynak yapma.
+- Büyük tasarım yapısını bozma.
+- Sadece istenen sorunları düzelt.
+
+İŞ BİTİNCE:
+1. npm run build çalıştır.
+2. Build hatası varsa düzelt.
+3. SON_CIKTI.md dosyasını güncelle.
+4. SON_CIKTI.md içine şunları yaz:
+- Değiştirilen dosyalar
+- 3D matematiksel düzeltme özeti
+- Arkası görünmeyen mesh için yapılan çözüm
+- Kalp / yıldız / çiçek / kap form düzeltmeleri
+- Galeri + Daha Fazla Göster durumu
+- Video durumu
+- Build sonucu
+- Canlı site linki: https://gezici-comlek-atolyesi.vercel.app
+
+En sona şu satırı ekle:
+GUNCELLEME_TAMAMLANDI=TRUE

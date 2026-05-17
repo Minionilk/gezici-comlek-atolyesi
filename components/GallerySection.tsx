@@ -10,7 +10,7 @@ type GalleryImage = {
   src: string;
 };
 
-const initialVisibleCount = 6;
+const initialVisibleCount = 9;
 const visibleStep = 6;
 
 export default function GallerySection({ images }: { images: GalleryImage[] }) {

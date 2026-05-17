@@ -14,7 +14,6 @@ function smoothstep(edge0: number, edge1: number, value: number) {
 
 function createClayGeometry(radialSegments: number, heightSegments: number) {
   const positions: number[] = [];
-  const normals: number[] = [];
   const uvs: number[] = [];
   const indices: number[] = [];
 
@@ -25,7 +24,6 @@ function createClayGeometry(radialSegments: number, heightSegments: number) {
       const u = xIndex / radialSegments;
       const theta = u * Math.PI * 2;
       positions.push(Math.cos(theta) * 0.62, v * 1.7 - 0.85, Math.sin(theta) * 0.62);
-      normals.push(Math.cos(theta), 0, Math.sin(theta));
       uvs.push(u, v);
     }
   }
@@ -41,7 +39,6 @@ function createClayGeometry(radialSegments: number, heightSegments: number) {
 
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
-  geometry.setAttribute("normal", new THREE.Float32BufferAttribute(normals, 3));
   geometry.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
   geometry.setIndex(indices);
   geometry.computeVertexNormals();
@@ -76,35 +73,35 @@ function updateClayShape(geometry: THREE.BufferGeometry, morph: number) {
   const heartPhase = smoothstep(0.55, 0.96, morph);
 
   for (let yIndex = 0; yIndex <= heightSegments; yIndex += 1) {
-    const v = yIndex / heightSegments;
-    const y = v * 1.5 - 0.75;
-    const baseFoot = 0.48 + smoothstep(0, 0.22, v) * 0.12;
-    const cylinderRadius = 0.6 + Math.sin(v * Math.PI) * 0.035;
-    const bowlRadius = baseFoot + Math.pow(v, 0.66) * 0.54 + Math.sin(v * Math.PI) * 0.1;
-    const neckTuck = heartPhase * smoothstep(0.58, 0.86, v) * (1 - smoothstep(0.9, 1, v)) * 0.16;
-    const rimBand = smoothstep(0.72, 1, v);
+    const t = yIndex / heightSegments;
+    const y = t * 1.52 - 0.76;
+    const topBand = smoothstep(0.62, 1, t);
+    const baseRadius = 0.36 + smoothstep(0, 0.18, t) * 0.12;
+    const cylinderRadius = 0.52 + Math.sin(t * Math.PI) * 0.045;
+    const bowlRadius = baseRadius + Math.pow(t, 1.6) * 0.64 + Math.sin(t * Math.PI) * 0.14;
+    const neckTuck = heartPhase * smoothstep(0.58, 0.86, t) * (1 - smoothstep(0.92, 1, t)) * 0.14;
 
     for (let xIndex = 0; xIndex <= radialSegments; xIndex += 1) {
       const index = yIndex * row + xIndex;
       const theta = (xIndex / radialSegments) * Math.PI * 2;
-      const rimWave = Math.sin(theta * 2) * 0.025 * bowlPhase * smoothstep(0.42, 1, v);
-      const lobe = Math.pow(Math.max(Math.sin(theta), 0), 2) * 0.28;
-      const lowerPoint = Math.max(-Math.sin(theta), 0) * 0.2;
-      const notch = Math.exp(-Math.pow(theta - Math.PI / 2, 2) * 16) * 0.22;
-      const heartContour = (lobe + lowerPoint - notch) * heartPhase * rimBand;
+      const rimWave = Math.sin(theta * 2) * 0.022 * bowlPhase * smoothstep(0.46, 1, t);
+      const lobe = Math.pow(Math.max(Math.sin(theta), 0), 2) * 0.22;
+      const lowerPoint = Math.max(-Math.sin(theta), 0) * 0.14;
+      const notch = Math.exp(-Math.pow(theta - Math.PI / 2, 2) * 18) * 0.18;
+      const heartContour = (lobe + lowerPoint - notch) * heartPhase * topBand;
       const radius = THREE.MathUtils.clamp(
         THREE.MathUtils.lerp(cylinderRadius, bowlRadius, bowlPhase) - neckTuck + rimWave + heartContour,
         0.36,
-        1.16,
+        1.18,
       );
-      const rimLift = heartPhase * rimBand * (lobe * 0.12 - notch * 0.18);
-      const wetThrowLines = Math.sin(v * 44 + theta * 1.4) * 0.009 * (0.35 + bowlPhase);
+      const rimLift = heartPhase * topBand * (lobe * 0.1 - notch * 0.14);
+      const wetThrowLines = Math.sin(t * 44 + theta * 1.4) * 0.008 * (0.35 + bowlPhase);
 
       position.setXYZ(
         index,
-        Math.cos(theta) * THREE.MathUtils.clamp(radius + wetThrowLines, 0.34, 1.17),
+        Math.cos(theta) * THREE.MathUtils.clamp(radius + wetThrowLines, 0.34, 1.19),
         y + rimLift,
-        Math.sin(theta) * THREE.MathUtils.clamp(radius + wetThrowLines, 0.34, 1.17),
+        Math.sin(theta) * THREE.MathUtils.clamp(radius + wetThrowLines, 0.34, 1.19),
       );
     }
   }
@@ -122,11 +119,11 @@ export default function PotteryWheelHero() {
 
     const reduceMotion = prefersReducedMotion();
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color("#f0ddc8");
+    scene.background = new THREE.Color("#ead7c1");
 
-    const camera = new THREE.PerspectiveCamera(40, 1, 0.01, 90);
-    camera.position.set(4, 2.75, 4);
-    camera.lookAt(0, 0.02, 0);
+    const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 120);
+    camera.position.set(3.6, 2.4, 4.2);
+    camera.lookAt(0, 0.45, 0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
     renderer.setClearColor(0x000000, 0);
@@ -149,6 +146,7 @@ export default function PotteryWheelHero() {
       metalness: 0.02,
       roughness: 0.34,
       envMapIntensity: 0.7,
+      side: THREE.DoubleSide,
     });
     const clay = new THREE.Mesh(clayGeometry, clayMaterial);
     clay.position.y = 0.17;

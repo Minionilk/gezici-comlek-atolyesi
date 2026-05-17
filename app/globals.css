@@ -103,7 +103,7 @@ img {
   }
 
   .pottery-hero-canvas {
-    @apply relative z-10 h-[340px] w-full overflow-hidden rounded-[1.5rem] bg-[radial-gradient(circle_at_50%_26%,#fffdf8_0,#efe1d0_46%,#d9bfa5_100%)] sm:h-[440px] sm:rounded-[1.75rem] lg:h-[540px];
+    @apply relative z-10 h-[340px] w-full overflow-hidden rounded-[1.5rem] bg-[radial-gradient(circle_at_50%_26%,#fffaf2_0,#ead8c2_48%,#cfae91_100%)] sm:h-[440px] sm:rounded-[1.75rem] lg:h-[540px];
   }
 
   .pottery-hero-canvas canvas {
@@ -200,7 +200,7 @@ img {
   }
 
   .form-flow-canvas {
-    @apply h-[320px] w-full overflow-hidden rounded-[1.25rem] bg-[radial-gradient(circle_at_50%_24%,#fffdf8_0,#efe0cd_50%,#d8bea4_100%)] sm:h-[380px] lg:h-[420px];
+    @apply h-[320px] w-full overflow-hidden rounded-[1.25rem] bg-[radial-gradient(circle_at_50%_24%,#fffaf2_0,#ead8c2_50%,#cfae91_100%)] sm:h-[380px] lg:h-[420px];
   }
 
   .form-flow-canvas canvas {

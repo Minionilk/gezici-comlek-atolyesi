@@ -39,6 +39,8 @@ const formOptions = [
 type FormId = (typeof formOptions)[number]["id"];
 const showcaseForms: FormId[] = ["bowl", "flower", "star", "heart", "vase"];
 const formLabels = new Map<FormId, string>(formOptions.map((option) => [option.id, option.label]));
+const heartMaxAbsX = 16;
+const heartMaxAbsZ = 17;
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
@@ -78,27 +80,68 @@ function createGeometry(radialSegments = 56, heightSegments = 48) {
   return geometry;
 }
 
-function radiusForForm(form: FormId, v: number, theta: number) {
-  const foot = 0.4 + smoothstep(0, 0.2, v) * 0.14;
-  const rimBand = Math.pow(smoothstep(0.72, 1, v), 1.7);
-  const belly = Math.sin(v * Math.PI);
-  const bowlBody = foot + Math.pow(v, 0.68) * 0.48 + belly * 0.1;
+function baseRadiusForForm(form: FormId, t: number, theta: number) {
+  const foot = 0.32 + smoothstep(0, 0.2, t) * 0.16;
+  const belly = Math.sin(t * Math.PI);
+  const topBand = smoothstep(0.62, 1, t);
+  const bowlBody = foot + Math.pow(t, 1.6) * 0.56 + belly * 0.13;
 
-  if (form === "bowl") return bowlBody;
-  if (form === "cup") return 0.46 + smoothstep(0.2, 1, v) * 0.08 + belly * 0.025;
-  if (form === "star") return bowlBody + rimBand * Math.cos(theta * 5) * 0.13;
-  if (form === "flower") return bowlBody + rimBand * Math.sin(theta * 6) * 0.1;
+  if (form === "bowl" || form === "heart") return bowlBody;
+  if (form === "cup") {
+    const base = 0.38;
+    const linearGrow = 0.24;
+    const slightLip = smoothstep(0.82, 1, t) * 0.1;
+    return base + linearGrow * t + belly * 0.045 + slightLip;
+  }
+  if (form === "star") {
+    const starWave = Math.cos(theta * 5);
+    return bowlBody * clamp(1 + topBand * 0.16 * starWave, 0.82, 1.2);
+  }
+  if (form === "flower") {
+    const wave = Math.sin(theta * 6) * 0.7 + Math.sin(theta * 12) * 0.15;
+    return bowlBody * clamp(1 + topBand * 0.12 * wave, 0.86, 1.16);
+  }
   if (form === "vase") {
-    const shoulder = Math.exp(-Math.pow(v - 0.42, 2) * 9) * 0.28;
-    const neck = smoothstep(0.68, 0.9, v) * 0.22;
-    return 0.38 + shoulder - neck + smoothstep(0.9, 1, v) * 0.08;
+    const shoulder = Math.exp(-Math.pow(t - 0.42, 2) * 10) * 0.36;
+    const neck = smoothstep(0.66, 0.9, t) * 0.27;
+    return 0.36 + shoulder - neck + smoothstep(0.9, 1, t) * 0.09;
   }
 
-  const wrapped = Math.atan2(Math.sin(theta - Math.PI / 2), Math.cos(theta - Math.PI / 2));
-  const lobes = Math.pow(Math.abs(Math.sin(theta)), 1.7) * 0.17;
-  const point = Math.max(-Math.sin(theta), 0) * 0.1;
-  const notch = Math.exp(-wrapped * wrapped * 18) * 0.24;
-  return bowlBody + rimBand * (lobes + point - notch);
+  return bowlBody;
+}
+
+function heartRimPoint(theta: number, radius: number) {
+  const u = theta;
+  const hx = 16 * Math.sin(u) ** 3;
+  const hz = 13 * Math.cos(u) - 5 * Math.cos(2 * u) - 2 * Math.cos(3 * u) - Math.cos(4 * u);
+  const heartX = (hx / heartMaxAbsX) * radius * 1.04;
+  const heartZ = (hz / heartMaxAbsZ) * radius * 1.02 - radius * 0.02;
+
+  return { x: heartX, z: heartZ };
+}
+
+function pointForForm(form: FormId, t: number, theta: number) {
+  const radius = baseRadiusForForm(form, t, theta);
+  const circleX = Math.cos(theta) * radius;
+  const circleZ = Math.sin(theta) * radius;
+  const topBand = smoothstep(0.62, 1, t);
+
+  if (form !== "heart") {
+    return { x: circleX, z: circleZ, yLift: 0 };
+  }
+
+  const heart = heartRimPoint(theta, radius);
+  const heartStrength = 0.92;
+  const mix = topBand * heartStrength;
+  const wrapped = Math.atan2(Math.sin(theta), Math.cos(theta));
+  const notchLift = Math.exp(-wrapped * wrapped * 18) * -0.06;
+  const lobeLift = Math.pow(Math.abs(Math.sin(theta)), 1.6) * 0.035;
+
+  return {
+    x: THREE.MathUtils.lerp(circleX, heart.x, mix),
+    z: THREE.MathUtils.lerp(circleZ, heart.z, mix),
+    yLift: topBand * (lobeLift + notchLift),
+  };
 }
 
 function updateGeometry(geometry: THREE.BufferGeometry, fromForm: FormId, toForm: FormId, mix: number) {
@@ -108,28 +151,21 @@ function updateGeometry(geometry: THREE.BufferGeometry, fromForm: FormId, toForm
   const position = geometry.getAttribute("position") as THREE.BufferAttribute;
 
   for (let yIndex = 0; yIndex <= heightSegments; yIndex += 1) {
-    const v = yIndex / heightSegments;
-    const y = v * 1.32 - 0.66;
+    const t = yIndex / heightSegments;
+    const y = t * 1.32 - 0.66;
 
     for (let xIndex = 0; xIndex <= radialSegments; xIndex += 1) {
       const theta = (xIndex / radialSegments) * Math.PI * 2;
-      const throwLine = Math.sin(v * 34 + theta * 1.2) * 0.006;
-      const fromRadius = radiusForForm(fromForm, v, theta);
-      const toRadius = radiusForForm(toForm, v, theta);
-      const radius = clamp(THREE.MathUtils.lerp(fromRadius, toRadius, mix) + throwLine, 0.3, 1.06);
-      const heartLift = (form: FormId) => {
-        if (form !== "heart") return 0;
-        const wrapped = Math.atan2(Math.sin(theta - Math.PI / 2), Math.cos(theta - Math.PI / 2));
-        const topBand = smoothstep(0.72, 1, v);
-        const lobes = Math.pow(Math.abs(Math.sin(theta)), 1.6) * 0.04;
-        const notch = Math.exp(-wrapped * wrapped * 18) * 0.075;
-        return topBand * (lobes - notch);
-      };
-      const fromRimLift = heartLift(fromForm);
-      const toRimLift = heartLift(toForm);
-      const rimLift = THREE.MathUtils.lerp(fromRimLift, toRimLift, mix);
+      const throwLine = Math.sin(t * 34 + theta * 1.2) * 0.006;
+      const fromPoint = pointForForm(fromForm, t, theta);
+      const toPoint = pointForForm(toForm, t, theta);
+      const x = THREE.MathUtils.lerp(fromPoint.x, toPoint.x, mix);
+      const z = THREE.MathUtils.lerp(fromPoint.z, toPoint.z, mix);
+      const length = Math.hypot(x, z);
+      const lineScale = length > 0 ? (length + throwLine) / length : 1;
+      const yLift = THREE.MathUtils.lerp(fromPoint.yLift, toPoint.yLift, mix);
 
-      position.setXYZ(yIndex * row + xIndex, Math.cos(theta) * radius, y + rimLift, Math.sin(theta) * radius);
+      position.setXYZ(yIndex * row + xIndex, x * lineScale, y + yLift, z * lineScale);
     }
   }
 
@@ -147,10 +183,15 @@ export default function InteractiveFormFlow() {
   const autoShowcaseRef = useRef(false);
   const showcaseIndexRef = useRef(0);
   const showcaseLabelRef = useRef<FormId>("bowl");
+  const showcaseStartRef = useRef(0);
   const mountRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     autoShowcaseRef.current = selectedForm === "heart";
+    if (selectedForm === "heart") {
+      showcaseStartRef.current = performance.now() * 0.001;
+      showcaseIndexRef.current = 0;
+    }
     if (selectedFormRef.current !== selectedForm) {
       previousFormRef.current = selectedFormRef.current;
       morphProgressRef.current = 0;
@@ -163,11 +204,11 @@ export default function InteractiveFormFlow() {
     if (!mount) return undefined;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color("#efe0cd");
+    scene.background = new THREE.Color("#ead7c1");
 
-    const camera = new THREE.PerspectiveCamera(40, 1, 0.01, 90);
-    camera.position.set(3.2, 2.2, 3.2);
-    camera.lookAt(0, -0.08, 0);
+    const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 120);
+    camera.position.set(3.6, 2.4, 4.2);
+    camera.lookAt(0, 0.45, 0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
     renderer.setClearColor(0x000000, 0);
@@ -187,7 +228,12 @@ export default function InteractiveFormFlow() {
 
     const geometry = createGeometry();
     updateGeometry(geometry, previousFormRef.current, selectedFormRef.current, morphProgressRef.current);
-    const material = new THREE.MeshStandardMaterial({ color: "#f8f1e8", roughness: 0.38, metalness: 0.02 });
+    const material = new THREE.MeshStandardMaterial({
+      color: "#f8f1e8",
+      roughness: 0.38,
+      metalness: 0.02,
+      side: THREE.DoubleSide,
+    });
     const mesh = new THREE.Mesh(geometry, material);
     mesh.position.y = 0.02;
     group.add(mesh);
@@ -224,10 +270,11 @@ export default function InteractiveFormFlow() {
 
     const render = () => {
       if (autoShowcaseRef.current) {
-        const elapsed = performance.now() * 0.001;
-        const segment = Math.floor(elapsed / 2.2) % showcaseForms.length;
+        const elapsed = performance.now() * 0.001 - showcaseStartRef.current;
+        const segmentDuration = 2.8;
+        const segment = Math.floor(elapsed / segmentDuration) % showcaseForms.length;
         const nextSegment = (segment + 1) % showcaseForms.length;
-        const localProgress = (elapsed / 2.2) % 1;
+        const localProgress = (elapsed / segmentDuration) % 1;
         const easedMix = smoothstep(0, 1, localProgress);
         updateGeometry(geometry, showcaseForms[segment], showcaseForms[nextSegment], easedMix);
         if (showcaseIndexRef.current !== segment) {
@@ -277,7 +324,13 @@ export default function InteractiveFormFlow() {
               key={option.id}
               onClick={() => {
                 autoShowcaseRef.current = option.id === "heart";
-                if (option.id !== "heart") setShowcaseForm(option.id);
+                if (option.id === "heart") {
+                  showcaseStartRef.current = performance.now() * 0.001;
+                  showcaseIndexRef.current = 0;
+                  setShowcaseForm(showcaseForms[0]);
+                } else {
+                  setShowcaseForm(option.id);
+                }
                 setSelectedForm(option.id);
               }}
               type="button"

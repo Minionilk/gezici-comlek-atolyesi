@@ -25,7 +25,7 @@ const videoPath = "/media/atolye-video.mp4";
 const instagramQrPath = "/social/instagram-qr.png";
 const galleryDirectory = path.join(process.cwd(), "public", "galeri");
 const outGalleryDirectory = path.join(process.cwd(), "out", "galeri");
-const imageExtensions = new Set([".jpg", ".jpeg", ".png", ".webp", ".avif", ".gif"]);
+const imageExtensions = new Set([".jpg", ".jpeg", ".png", ".webp"]);
 
 function publicFileExists(publicPath: string) {
   try {
