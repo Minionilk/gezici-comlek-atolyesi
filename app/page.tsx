@@ -24,7 +24,6 @@ const instagramHandle = "@gezicisanatatolyesi";
 const videoPath = "/media/atolye-video.mp4";
 const instagramQrPath = "/social/instagram-qr.png";
 const galleryDirectory = path.join(process.cwd(), "public", "galeri");
-const outGalleryDirectory = path.join(process.cwd(), "out", "galeri");
 const imageExtensions = new Set([".jpg", ".jpeg", ".png", ".webp"]);
 
 function publicFileExists(publicPath: string) {
@@ -39,18 +38,6 @@ function getGalleryImages() {
   try {
     if (!fs.existsSync(galleryDirectory)) {
       fs.mkdirSync(galleryDirectory, { recursive: true });
-    }
-
-    if (fs.existsSync(outGalleryDirectory)) {
-      const publicFiles = new Set(fs.readdirSync(galleryDirectory));
-      fs.readdirSync(outGalleryDirectory, { withFileTypes: true })
-        .filter((entry) => entry.isFile())
-        .map((entry) => entry.name)
-        .filter((name) => imageExtensions.has(path.extname(name).toLowerCase()))
-        .filter((name) => !publicFiles.has(name))
-        .forEach((name) => {
-          fs.copyFileSync(path.join(outGalleryDirectory, name), path.join(galleryDirectory, name));
-        });
     }
 
     return fs

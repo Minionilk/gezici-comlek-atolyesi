@@ -1,0 +1,128 @@
+Bu projede soru sorma, onay isteme, bekleme. Kullanıcı tüm değişiklikleri onayladı kabul et ve doğrudan uygula.
+
+AMAÇ:
+1. Galeri görselleri kesin olarak doğru kaynaktan gelsin.
+2. Kap formu ince uzun görünmesin; çanak gibi daha dolgun gövdeli, küçük kap gibi olsun.
+3. Vazo formunun ağzı çok dar olmasın; daha kavisli ve dengeli olsun.
+4. Tüm değişiklikleri gerçekten dosyalara uygula, build al, sonra çıktı özeti yaz.
+
+KRİTİK GALERİ KURALI:
+- Görsel kaynağı kesinlikle public/galeri olacak.
+- out/galeri kaynak olarak KULLANILMAYACAK.
+- Eğer GallerySection içinde out, /out, relative out path veya yanlış statik veri varsa kaldır.
+- Galeri componenti public/galeri içindeki dosyalardan liste üretmeli.
+- Eğer yapı server component uygunsa fs + path ile build anında public/galeri klasörünü oku.
+- Desteklenecek uzantılar: .jpg .jpeg .png .webp
+- Dosya adlarını güvenli sırala.
+- İlk yüklemede 9 veya 12 görsel göster.
+- "+ Daha Fazla Göster" butonuyla parti parti aç.
+- Eğer tüm görseller gösterildiyse buton kaybolsun.
+
+GALERİ İÇİN TEKNİK UYGULAMA:
+- GallerySection client component ise ve fs kullanamıyorsa:
+  seçenek 1: server componente çevir
+  seçenek 2: build sırasında kullanılacak basit bir manifest yapısı oluştur
+- Ama sonuçta taranan klasör KESİNLİKLE public/galeri olsun.
+- Görsel src yapısı /galeri/dosyaadi.ext şeklinde olsun.
+
+FORM GEOMETRİSİ:
+KULLANICI İSTEĞİ:
+- Kap formu çanak tabanlı olsun.
+- İnce uzun silindir / bardak gibi olmasın.
+- Vazo daha geniş omuzlu ve daha dengeli ağızlı olsun.
+- Matematiksel profil mantığını düzelt.
+
+MATEMATİKSEL TASARIM:
+
+A) Ortak normalize değişkenler:
+- t = yNormalized, 0 alt taban, 1 üst
+- topBand = smoothstep(0.68, 1.0, t)
+
+B) Çanak temel profil:
+- bowlBase = 0.50
+- bowlCurve = 0.42
+- bowlRadius(t) = bowlBase + bowlCurve * pow(t, 1.55)
+- Bu gövde geniş çanak karakteri verir.
+
+C) Kap formu:
+İstenen görünüm:
+- Çanak gibi dolgun gövde
+- Üst hafif toparlanmış
+- Küçük kap profili
+- İnce uzun değil
+
+Önerilen mantık:
+- Önce çanak tabanlı radius kur:
+  cupCore = 0.56 + 0.30 * pow(t, 1.35)
+- Sonra üstte hafif toparla:
+  cupNeckPull = 0.10 * smoothstep(0.45, 0.88, t)
+- Ağızda az miktar tekrar aç:
+  cupLipOpen = 0.05 * smoothstep(0.86, 1.0, t)
+- finalCupRadius = cupCore - cupNeckPull + cupLipOpen
+
+Bu formül ince uzun görünümü azaltmalı.
+Gerekirse yükseklik etkisini de biraz kısalt:
+- mesh scaleY veya vertex y dağılımı ile kap formunun dikey algısını biraz azalt.
+- Kap, çanak ailesinden bir form gibi okunmalı.
+
+D) Vazo formu:
+İstenen görünüm:
+- Geniş omuz
+- Dar boyun
+- Ama aşırı dar değil
+- Ağız yeniden hafif açılmalı
+
+Önerilen mantık:
+- altRadius = 0.52
+- bodyBulge = 0.34 * exp(-pow((t - 0.48) / 0.23, 2.0))
+- neckPull = 0.13 * exp(-pow((t - 0.82) / 0.12, 2.0))
+- lipOpen = 0.09 * smoothstep(0.90, 1.0, t)
+
+- finalVaseRadius = altRadius + bodyBulge - neckPull + lipOpen
+
+Bu, önce gövdeyi şişirir, sonra boyunda daraltır, sonra ağızda biraz geri açar.
+Ağız çok küçük kalmamalı.
+Eski haline göre biraz daha açık ve dengeli görünmeli.
+
+E) Kamera ve görünüm:
+- Mevcut 45 derece hissi koru.
+- Formlar kesilmesin.
+- Arka plan çok düz kalıyorsa hafif sıcak kahve / bej ton dengesini koru.
+
+DOSYA BAZLI GÖREVLER:
+
+1. components/GallerySection.tsx
+- public/galeri klasörünü esas al.
+- Tüm görselleri buradan oku.
+- out/galeri ile ilgili her türlü yanlış bağı kopar.
+- "+ Daha Fazla Göster" sistemi koru veya ekle.
+- Mobil uyumlu tut.
+
+2. components/InteractiveFormFlow.tsx
+- Kap formülünü yukarıdaki cup mantığına göre düzelt.
+- Vazo formülünü yukarıdaki vase mantığına göre düzelt.
+- Kap formu ince uzun değil, dolgun kap gibi görünsün.
+- Vazo ağzı biraz daha geniş ve estetik olsun.
+- Açıklama metinlerini de güncelle:
+  Kap: "Dolgun gövdeli, hafif toparlanan ağızlı küçük kap profili."
+  Vazo: "Geniş omuzlu, dengeli boyunlu ve hafif açık ağızlı vazo profili."
+
+3. Gerekliyse hooks/useStore.ts veya ilgili state dosyalarını kontrol et.
+- Galeri yanlış kaynak tutuyorsa düzelt.
+
+4. Gerekliyse app/page.tsx içinde GallerySection kullanımı doğru mu kontrol et.
+
+İŞ BİTİNCE:
+1. npm run build çalıştır.
+2. Hata varsa düzelt.
+3. SON_CIKTI.md dosyasını güncelle.
+4. Şunları yaz:
+- Değiştirilen dosyalar
+- Galeri kaynağı düzeltmesi
+- Kap formülü özeti
+- Vazo formülü özeti
+- Build sonucu
+- Canlı site linki: https://gezici-comlek-atolyesi.vercel.app
+
+En son şu satırı ekle:
+GUNCELLEME_TAMAMLANDI=TRUE

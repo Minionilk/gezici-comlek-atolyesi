@@ -44,18 +44,16 @@ export default function GallerySection({ images }: { images: GalleryImage[] }) {
               </motion.button>
             ))}
           </div>
-          <div className="gallery-more">
-            {hasMoreImages ? (
+          {hasMoreImages ? (
+            <div className="gallery-more">
               <button
                 onClick={() => setVisibleCount((count) => Math.min(count + visibleStep, images.length))}
                 type="button"
               >
                 + Daha Fazla Göster
               </button>
-            ) : (
-              <span>Tüm fotoğraflar gösterildi</span>
-            )}
-          </div>
+            </div>
+          ) : null}
         </>
       ) : (
         <Reveal className="empty-gallery">

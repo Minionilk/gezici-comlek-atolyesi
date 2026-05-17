@@ -12,7 +12,7 @@ const formOptions = [
   {
     id: "cup",
     label: "Kap",
-    description: "Dengeli, sade küçük kap profili.",
+    description: "Dolgun gövdeli, hafif toparlanan ağızlı küçük kap profili.",
   },
   {
     id: "star",
@@ -27,7 +27,7 @@ const formOptions = [
   {
     id: "vase",
     label: "Vazo",
-    description: "Geniş omuzlu, dar boyunlu vazo profili.",
+    description: "Geniş omuzlu, dengeli boyunlu ve hafif açık ağızlı vazo profili.",
   },
   {
     id: "heart",
@@ -81,17 +81,17 @@ function createGeometry(radialSegments = 56, heightSegments = 48) {
 }
 
 function baseRadiusForForm(form: FormId, t: number, theta: number) {
-  const foot = 0.32 + smoothstep(0, 0.2, t) * 0.16;
-  const belly = Math.sin(t * Math.PI);
-  const topBand = smoothstep(0.62, 1, t);
-  const bowlBody = foot + Math.pow(t, 1.6) * 0.56 + belly * 0.13;
+  const topBand = smoothstep(0.68, 1, t);
+  const bowlBase = 0.5;
+  const bowlCurve = 0.42;
+  const bowlBody = bowlBase + bowlCurve * Math.pow(t, 1.55);
 
   if (form === "bowl" || form === "heart") return bowlBody;
   if (form === "cup") {
-    const base = 0.38;
-    const linearGrow = 0.24;
-    const slightLip = smoothstep(0.82, 1, t) * 0.1;
-    return base + linearGrow * t + belly * 0.045 + slightLip;
+    const cupCore = 0.56 + 0.3 * Math.pow(t, 1.35);
+    const cupNeckPull = 0.1 * smoothstep(0.45, 0.88, t);
+    const cupLipOpen = 0.05 * smoothstep(0.86, 1, t);
+    return cupCore - cupNeckPull + cupLipOpen;
   }
   if (form === "star") {
     const starWave = Math.cos(theta * 5);
@@ -102,12 +102,18 @@ function baseRadiusForForm(form: FormId, t: number, theta: number) {
     return bowlBody * clamp(1 + topBand * 0.12 * wave, 0.86, 1.16);
   }
   if (form === "vase") {
-    const shoulder = Math.exp(-Math.pow(t - 0.42, 2) * 10) * 0.36;
-    const neck = smoothstep(0.66, 0.9, t) * 0.27;
-    return 0.36 + shoulder - neck + smoothstep(0.9, 1, t) * 0.09;
+    const altRadius = 0.52;
+    const bodyBulge = 0.34 * Math.exp(-Math.pow((t - 0.48) / 0.23, 2));
+    const neckPull = 0.13 * Math.exp(-Math.pow((t - 0.82) / 0.12, 2));
+    const lipOpen = 0.09 * smoothstep(0.9, 1, t);
+    return altRadius + bodyBulge - neckPull + lipOpen;
   }
 
   return bowlBody;
+}
+
+function heightScaleForForm(form: FormId) {
+  return form === "cup" ? 0.9 : 1;
 }
 
 function heartRimPoint(theta: number, radius: number) {
@@ -124,7 +130,7 @@ function pointForForm(form: FormId, t: number, theta: number) {
   const radius = baseRadiusForForm(form, t, theta);
   const circleX = Math.cos(theta) * radius;
   const circleZ = Math.sin(theta) * radius;
-  const topBand = smoothstep(0.62, 1, t);
+  const topBand = smoothstep(0.68, 1, t);
 
   if (form !== "heart") {
     return { x: circleX, z: circleZ, yLift: 0 };
@@ -152,13 +158,15 @@ function updateGeometry(geometry: THREE.BufferGeometry, fromForm: FormId, toForm
 
   for (let yIndex = 0; yIndex <= heightSegments; yIndex += 1) {
     const t = yIndex / heightSegments;
-    const y = t * 1.32 - 0.66;
+    const baseY = t * 1.32 - 0.66;
 
     for (let xIndex = 0; xIndex <= radialSegments; xIndex += 1) {
       const theta = (xIndex / radialSegments) * Math.PI * 2;
       const throwLine = Math.sin(t * 34 + theta * 1.2) * 0.006;
       const fromPoint = pointForForm(fromForm, t, theta);
       const toPoint = pointForForm(toForm, t, theta);
+      const yScale = THREE.MathUtils.lerp(heightScaleForForm(fromForm), heightScaleForForm(toForm), mix);
+      const y = baseY * yScale;
       const x = THREE.MathUtils.lerp(fromPoint.x, toPoint.x, mix);
       const z = THREE.MathUtils.lerp(fromPoint.z, toPoint.z, mix);
       const length = Math.hypot(x, z);
