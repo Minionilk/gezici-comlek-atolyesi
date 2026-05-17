@@ -4,12 +4,36 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
 const formOptions = [
-  { id: "bowl", label: "Çanak" },
-  { id: "cup", label: "Kap" },
-  { id: "star", label: "Yıldız" },
-  { id: "flower", label: "Çiçek" },
-  { id: "vase", label: "Vazo" },
-  { id: "heart", label: "Özgün Kalp" },
+  {
+    id: "bowl",
+    label: "Çanak",
+    description: "Çamur merkezlenir, üst kısım yavaşça açılarak geniş ağızlı çanak formu oluşturulur.",
+  },
+  {
+    id: "cup",
+    label: "Kap",
+    description: "Çamur dikey yükseltilir, duvarlar sade ve kulpsuz küçük kap formuna getirilir.",
+  },
+  {
+    id: "star",
+    label: "Yıldız",
+    description: "Üst çeper beş köşeli ritimde dışa-içe yönlendirilerek dekoratif yıldız etkisi verilir.",
+  },
+  {
+    id: "flower",
+    label: "Çiçek",
+    description: "Üst kısım yumuşak dalgalarla altı yapraklı çiçek formuna yaklaştırılır.",
+  },
+  {
+    id: "vase",
+    label: "Vazo",
+    description: "Gövde genişletilir, boyun kısmı daraltılır ve ağız dengeli biçimde açılır.",
+  },
+  {
+    id: "heart",
+    label: "Özgün Kalp formu",
+    description: "Üst çeper kalp karakterine yaklaşacak şekilde kıvrılır, alt taban tornada dengeli kalır.",
+  },
 ] as const;
 
 type FormId = (typeof formOptions)[number]["id"];
@@ -103,6 +127,7 @@ function updateGeometry(geometry: THREE.BufferGeometry, fromForm: FormId, toForm
 
 export default function InteractiveFormFlow() {
   const [selectedForm, setSelectedForm] = useState<FormId>("bowl");
+  const selectedOption = formOptions.find((option) => option.id === selectedForm) ?? formOptions[0];
   const selectedFormRef = useRef<FormId>("bowl");
   const previousFormRef = useRef<FormId>("bowl");
   const morphProgressRef = useRef(1);
@@ -124,8 +149,8 @@ export default function InteractiveFormFlow() {
     scene.background = new THREE.Color("#fff8ef");
 
     const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
-    camera.position.set(0, 0.62, 4.2);
-    camera.lookAt(0, -0.02, 0);
+    camera.position.set(2.75, 1.85, 3.05);
+    camera.lookAt(0, -0.08, 0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
     renderer.setClearColor(0x000000, 0);
@@ -174,6 +199,7 @@ export default function InteractiveFormFlow() {
       updateGeometry(geometry, previousFormRef.current, selectedFormRef.current, easedMix);
       mesh.rotation.y += reducedMotion ? 0 : 0.026;
       wheel.rotation.y += reducedMotion ? 0 : 0.04;
+      group.rotation.x = -0.03;
       renderer.render(scene, camera);
       if (!reducedMotion) frameId = window.requestAnimationFrame(render);
     };
@@ -212,6 +238,10 @@ export default function InteractiveFormFlow() {
               {option.label}
             </button>
           ))}
+        </div>
+        <div className="form-flow-description" aria-live="polite">
+          <strong>{selectedOption.label}</strong>
+          <p>{selectedOption.description}</p>
         </div>
       </div>
       <div

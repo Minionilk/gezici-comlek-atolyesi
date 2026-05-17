@@ -33,7 +33,7 @@ export default function GallerySection({ images }: { images: GalleryImage[] }) {
               viewport={{ once: true, amount: 0.12 }}
               whileInView={{ opacity: 1, y: 0 }}
             >
-              <img alt="Gezici çömlekçi çarkı atölyesi galeri fotoğrafı" src={image.src} />
+              <img alt="Gezici Sanat Atölyesi seramik çarkı galeri fotoğrafı" src={image.src} />
             </motion.button>
           ))}
         </div>

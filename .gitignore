@@ -1,9 +1,10 @@
-node_modules
-.next
-out
-.vercel
+node_modules/
+.next/
+out/
+.vercel/
 .env
 .env.local
-.DS_Store
-codex_prompt.txt
 *.log
+codex_prompt.txt
+codex_fix_prompt.txt
+TEST_CODEX_CALISTI.txt

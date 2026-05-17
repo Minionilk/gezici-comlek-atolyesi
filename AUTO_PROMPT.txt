@@ -1,0 +1,71 @@
+Bu projede soru sorma, onay isteme, "devam edeyim mi" deme. Kullanıcı tüm değişiklikleri onaylamış kabul et. Sadece uygula.
+
+PROJE:
+Gezici Sanat Atölyesi tanıtım sitesi.
+
+KESİN GÖREVLER:
+
+1. Marka adını her yerde "Gezici Sanat Atölyesi" yap.
+2. Instagram kullanıcı adını her yerde "@gezicisanatatolyesi" yap.
+3. Instagram linkini her yerde "https://www.instagram.com/gezicisanatatolyesi/" yap.
+4. Eski Instagram kullanıcı adı referanslarını tamamen kaldır.
+5. Video kaynağını kesin olarak "/media/atolye-video.mp4" yap.
+6. public/media/atolye-video.mp4 varsa video yok mesajı gösterme, videoyu göster.
+7. public/galeri içindeki tüm görseller galeriye dahil olsun.
+8. Hero animasyonunda alttaki etiketler mobilde görselin üstüne binmesin. Etiketler animasyonun hemen altında ayrı satırda dursun.
+9. Hero 3D seramik animasyonunun kamera açısını yaklaşık 45 dereceye getir. Animasyon mantığını bozma.
+10. Canlı Form Akışı bölümündeki 3D animasyonun kamera açısını yaklaşık 45 dereceye getir. Animasyon mantığını bozma.
+11. Canlı Form Akışı bölümünde kullanıcı bir forma bastığında o formun nasıl yapıldığını kısaca anlatan açıklama göster.
+12. Form açıklamaları şu mantıkta olsun:
+- Çanak: Çamur merkezlenir, üst kısım yavaşça açılarak geniş ağızlı çanak formu oluşturulur.
+- Kap: Çamur dikey yükseltilir, duvarlar sade ve kulpsuz küçük kap formuna getirilir.
+- Yıldız: Üst çeper beş köşeli ritimde dışa-içe yönlendirilerek dekoratif yıldız etkisi verilir.
+- Çiçek: Üst kısım yumuşak dalgalarla altı yapraklı çiçek formuna yaklaştırılır.
+- Vazo: Gövde genişletilir, boyun kısmı daraltılır ve ağız dengeli biçimde açılır.
+- Özgün Kalp: Üst çeper kalp karakterine yaklaşacak şekilde kıvrılır, alt taban tornada dengeli kalır.
+13. Eski alttaki form kartları bölümünü kaldır. Açıklamalar artık Canlı Form Akışı bölümünde olacak.
+14. Eski özgün form metnini "Özgün Kalp formu" yap.
+15. Siyah/koyu sert gölge, leke veya koyu çizgi varsa temizle.
+16. Beyaz çamur hissini koru.
+17. Video, galeri, hero ve form akışı mobil uyumlu olsun.
+18. 320px genişlikte yatay taşma olmasın.
+19. public/galeri içindeki fotoğrafları silme, taşıma veya yeniden adlandırma.
+20. out klasörünü kaynak olarak kullanma. Kaynak public klasörü olsun.
+21. Gerekiyorsa app/page.tsx, app/globals.css ve component dosyalarını değiştir.
+22. Sadece özet yazma; gerçek dosya değişikliklerini uygula.
+23. npm run build çalıştır.
+24. Build hatası varsa düzelt.
+25. SON_CIKTI.md dosyasını güncelle.
+
+SON_CIKTI.md formatı:
+
+# ✅ SON ÇIKTI RAPORU
+
+## Durum
+🟢 Build başarılı / 🔴 Build hatalı
+
+## Değiştirilen Dosyalar
+- ...
+
+## Eklenen Dosyalar
+- ...
+
+## Yapılan Ana Değişiklikler
+- ...
+
+## Beklenen Dosya Yolları
+- Video: public/media/atolye-video.mp4
+- Galeri: public/galeri/*
+- Instagram: https://www.instagram.com/gezicisanatatolyesi/
+
+## Build Sonucu
+- ...
+
+## Canlı Site
+https://gezici-comlek-atolyesi.vercel.app
+
+## Sonraki Önerilen Adımlar
+- ...
+
+En sona şu satırı ekle:
+GUNCELLEME_TAMAMLANDI=TRUE

@@ -1,5 +1,5 @@
 import FAQSection from "@/components/FAQSection";
-import FormCardsSection from "@/components/FormCardsSection";
+import InteractiveFormFlow from "@/components/InteractiveFormFlow";
 import GallerySection from "@/components/GallerySection";
 import PotteryWheelHero from "@/components/PotteryWheelHero";
 import Reveal from "@/components/Reveal";
@@ -24,7 +24,7 @@ const instagramHandle = "@gezicisanatatolyesi";
 const videoPath = "/media/atolye-video.mp4";
 const instagramQrPath = "/social/instagram-qr.png";
 const galleryDirectory = path.join(process.cwd(), "public", "galeri");
-const imageExtensions = new Set([".jpg", ".jpeg", ".png", ".webp"]);
+const imageExtensions = new Set([".jpg", ".jpeg", ".png", ".webp", ".avif", ".gif"]);
 
 function publicFileExists(publicPath: string) {
   try {
@@ -50,15 +50,6 @@ function getGalleryImages() {
     return [];
   }
 }
-
-const forms = [
-  "Çanak formu",
-  "Kap formu",
-  "Yıldız formu",
-  "Çiçek formu",
-  "Vazo formu",
-  "Özgün Kalp formu",
-];
 
 const heroBenefits = [
   {
@@ -201,7 +192,15 @@ export default function HomePage() {
         </div>
       </Reveal>
 
-      <FormCardsSection forms={forms} />
+      <section className="section-shell">
+        <Reveal className="section-heading">
+          <p className="section-kicker">Ne yapıyoruz</p>
+          <h2 className="section-title">Çarkta üretilebilen formlar</h2>
+        </Reveal>
+        <Reveal>
+          <InteractiveFormFlow />
+        </Reveal>
+      </section>
 
       <section className="bg-sand-50/75">
         <div className="section-shell grid gap-8 lg:grid-cols-[0.85fr_1.15fr]">

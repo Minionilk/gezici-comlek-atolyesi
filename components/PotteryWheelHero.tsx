@@ -108,21 +108,17 @@ export default function PotteryWheelHero() {
     scene.background = new THREE.Color("#fff7ec");
 
     const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 100);
-    camera.position.set(0, 0.95, 5.35);
-    camera.lookAt(0, 0.12, 0);
+    camera.position.set(3.6, 2.45, 3.8);
+    camera.lookAt(0, 0.02, 0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
     renderer.setClearColor(0x000000, 0);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     mount.appendChild(renderer.domElement);
 
     const ambientLight = new THREE.AmbientLight("#fff4e6", 2.1);
     const keyLight = new THREE.DirectionalLight("#fff7ef", 2.7);
     keyLight.position.set(3.2, 4.4, 3.6);
-    keyLight.castShadow = true;
-    keyLight.shadow.mapSize.set(1024, 1024);
     const fillLight = new THREE.DirectionalLight("#d8865f", 0.65);
     fillLight.position.set(-3, 1.8, 2);
     scene.add(ambientLight, keyLight, fillLight);
@@ -139,8 +135,6 @@ export default function PotteryWheelHero() {
     });
     const clay = new THREE.Mesh(clayGeometry, clayMaterial);
     clay.position.y = 0.17;
-    clay.castShadow = true;
-    clay.receiveShadow = true;
     wheelGroup.add(clay);
 
     const wheelMaterial = new THREE.MeshStandardMaterial({
@@ -150,8 +144,6 @@ export default function PotteryWheelHero() {
     });
     const wheelTop = new THREE.Mesh(new THREE.CylinderGeometry(1.58, 1.68, 0.18, 96), wheelMaterial);
     wheelTop.position.y = -0.77;
-    wheelTop.castShadow = true;
-    wheelTop.receiveShadow = true;
     wheelGroup.add(wheelTop);
 
     const base = new THREE.Mesh(
@@ -159,18 +151,7 @@ export default function PotteryWheelHero() {
       new THREE.MeshStandardMaterial({ color: "#caa98d", roughness: 0.52, metalness: 0.04 }),
     );
     base.position.y = -1.14;
-    base.castShadow = true;
-    base.receiveShadow = true;
     wheelGroup.add(base);
-
-    const platform = new THREE.Mesh(
-      new THREE.CircleGeometry(3.1, 96),
-      new THREE.ShadowMaterial({ color: "#6c4a38", opacity: 0.13 }),
-    );
-    platform.rotation.x = -Math.PI / 2;
-    platform.position.y = -1.45;
-    platform.receiveShadow = true;
-    scene.add(platform);
 
     let frameId = 0;
     const clock = new THREE.Clock();
@@ -192,7 +173,7 @@ export default function PotteryWheelHero() {
 
       clay.rotation.y += reduceMotion ? 0 : 0.024;
       wheelTop.rotation.y += reduceMotion ? 0 : 0.038;
-      wheelGroup.rotation.x = -0.06;
+      wheelGroup.rotation.x = -0.04;
       wheelGroup.rotation.z = Math.sin(elapsed * 0.42) * 0.012;
 
       renderer.render(scene, camera);
@@ -213,8 +194,6 @@ export default function PotteryWheelHero() {
       wheelMaterial.dispose();
       base.geometry.dispose();
       (base.material as THREE.Material).dispose();
-      platform.geometry.dispose();
-      (platform.material as THREE.Material).dispose();
       renderer.dispose();
     };
   }, []);

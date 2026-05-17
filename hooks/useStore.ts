@@ -34,7 +34,7 @@ interface AppState {
 const demoSessions: WorkshopSession[] = [
   {
     id: "ws-1",
-    title: "Çömlekçi Çarkı Atölyesi - Temel",
+    title: "Gezici Sanat Atölyesi - Temel",
     instructor: "Barış Özarıkça",
     date: "2026-05-02",
     time: "10:00",

@@ -80,7 +80,7 @@ export default function Navigation({ activeTab, onTabChange }: NavigationProps) 
               <span className="text-white font-serif text-lg font-bold">S</span>
             </div>
             <div>
-              <h1 className="font-serif text-lg text-charcoal-800 leading-tight">Seramik Atölye</h1>
+              <h1 className="font-serif text-lg text-charcoal-800 leading-tight">Gezici Sanat Atölyesi</h1>
               <p className="text-xs text-charcoal-500">{currentUser?.role === "guest" ? "Misafir Portalı" : "Yönetim Portalı"}</p>
             </div>
           </div>
@@ -146,7 +146,7 @@ export default function Navigation({ activeTab, onTabChange }: NavigationProps) 
               <span className="text-white font-serif text-xl font-bold">S</span>
             </div>
             <div>
-              <h1 className="font-serif text-xl text-charcoal-800 leading-tight">Seramik Atölye</h1>
+              <h1 className="font-serif text-xl text-charcoal-800 leading-tight">Gezici Sanat Atölyesi</h1>
               <p className="text-xs text-charcoal-500">Kapalı Devre Portal</p>
             </div>
           </div>

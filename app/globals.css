@@ -17,6 +17,7 @@ html {
 
 body {
   margin: 0;
+  overflow-x: hidden;
   background:
     linear-gradient(180deg, rgba(255, 250, 243, 0.96), rgba(250, 247, 242, 0.98)),
     radial-gradient(circle at 12% 8%, rgba(207, 85, 41, 0.14), transparent 34%);
@@ -52,7 +53,7 @@ img {
   }
 
   .hero-shell {
-    @apply relative mx-auto grid min-h-[92vh] max-w-7xl items-center gap-8 px-5 py-8 sm:px-8 lg:grid-cols-[1fr_0.92fr] lg:gap-10 lg:px-10;
+    @apply relative mx-auto grid min-h-[92vh] max-w-7xl items-center gap-8 px-4 py-8 sm:px-8 lg:grid-cols-[1fr_0.92fr] lg:gap-10 lg:px-10;
   }
 
   .eyebrow {
@@ -60,7 +61,7 @@ img {
   }
 
   .button-primary {
-    @apply inline-flex min-h-12 items-center justify-center rounded-full bg-terracotta-700 px-6 py-3 text-center text-base font-extrabold text-white shadow-lg shadow-terracotta-900/20 transition duration-300 hover:-translate-y-1 hover:bg-terracotta-800 hover:shadow-xl hover:shadow-terracotta-900/25 focus:outline-none focus:ring-4 focus:ring-terracotta-300;
+    @apply inline-flex min-h-12 items-center justify-center rounded-full bg-terracotta-700 px-6 py-3 text-center text-base font-extrabold text-white shadow-md shadow-terracotta-900/15 transition duration-300 hover:-translate-y-1 hover:bg-terracotta-800 hover:shadow-lg hover:shadow-terracotta-900/20 focus:outline-none focus:ring-4 focus:ring-terracotta-300;
   }
 
   .button-secondary {
@@ -68,7 +69,7 @@ img {
   }
 
   .section-shell {
-    @apply mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-24 lg:px-10;
+    @apply mx-auto max-w-7xl px-4 py-20 sm:px-8 sm:py-24 lg:px-10;
   }
 
   .section-heading {
@@ -84,7 +85,7 @@ img {
   }
 
   .hero-art {
-    @apply relative mx-auto w-full max-w-[620px] overflow-hidden rounded-[2rem] border border-white/80 bg-white/65 p-3 shadow-2xl shadow-clay-900/10 backdrop-blur sm:rounded-[2.25rem];
+    @apply relative mx-auto w-full max-w-[620px] overflow-hidden rounded-[2rem] border border-white/80 bg-white/65 p-3 shadow-lg shadow-terracotta-900/10 backdrop-blur sm:rounded-[2.25rem];
   }
 
   .hero-art::before {
@@ -98,7 +99,7 @@ img {
   }
 
   .pottery-hero {
-    @apply min-h-[320px] sm:min-h-[420px] lg:min-h-[520px];
+    @apply min-h-[390px] sm:min-h-[500px] lg:min-h-[600px];
   }
 
   .pottery-hero-canvas {
@@ -110,7 +111,7 @@ img {
   }
 
   .pottery-hero-caption {
-    @apply pointer-events-none absolute inset-x-5 bottom-5 z-20 grid grid-cols-1 gap-2 text-xs font-extrabold uppercase tracking-[0.12em] text-clay-800 sm:grid-cols-3 sm:text-[0.7rem];
+    @apply relative z-10 mt-3 grid grid-cols-1 gap-2 text-xs font-extrabold uppercase tracking-[0.12em] text-clay-800 sm:grid-cols-3 sm:text-[0.7rem];
   }
 
   .pottery-hero-caption span {
@@ -159,7 +160,7 @@ img {
   }
 
   .form-flow-panel {
-    @apply grid gap-6 overflow-hidden rounded-[1.5rem] border border-terracotta-100 bg-[linear-gradient(145deg,#ffffff,#fff4e8)] p-4 shadow-xl shadow-clay-900/10 sm:rounded-[2rem] sm:p-6 lg:grid-cols-[0.88fr_1.12fr] lg:items-center;
+    @apply grid gap-6 overflow-hidden rounded-[1.5rem] border border-terracotta-100 bg-[linear-gradient(145deg,#ffffff,#fff4e8)] p-4 shadow-md shadow-terracotta-900/10 sm:rounded-[2rem] sm:p-6 lg:grid-cols-[0.88fr_1.12fr] lg:items-center;
   }
 
   .form-flow-copy {
@@ -179,11 +180,23 @@ img {
   }
 
   .form-flow-buttons button {
-    @apply min-h-12 rounded-full border border-clay-200 bg-white px-3 py-2 text-sm font-extrabold text-clay-800 transition hover:border-terracotta-300 hover:bg-terracotta-50 focus:outline-none focus:ring-4 focus:ring-terracotta-200;
+    @apply min-h-12 rounded-full border border-clay-200 bg-white px-3 py-2 text-sm font-extrabold leading-tight text-clay-800 transition hover:border-terracotta-300 hover:bg-terracotta-50 focus:outline-none focus:ring-4 focus:ring-terracotta-200;
   }
 
   .form-flow-buttons button.is-active {
-    @apply border-terracotta-600 bg-terracotta-700 text-white shadow-lg shadow-terracotta-900/15;
+    @apply border-terracotta-600 bg-terracotta-700 text-white shadow-md shadow-terracotta-900/15;
+  }
+
+  .form-flow-description {
+    @apply rounded-2xl border border-terracotta-100 bg-white/80 p-4 text-clay-800;
+  }
+
+  .form-flow-description strong {
+    @apply block text-base font-extrabold text-clay-950;
+  }
+
+  .form-flow-description p {
+    @apply mt-1 leading-7 text-clay-700;
   }
 
   .form-flow-canvas {
@@ -253,7 +266,7 @@ img {
   }
 
   .gallery-item {
-    @apply relative mb-4 w-full cursor-zoom-in break-inside-avoid overflow-hidden rounded-2xl border border-white bg-white p-2 text-left shadow-lg shadow-clay-900/10 transition duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-clay-900/20 focus:outline-none focus:ring-4 focus:ring-terracotta-200;
+    @apply relative mb-4 w-full cursor-zoom-in break-inside-avoid overflow-hidden rounded-2xl border border-white bg-white p-2 text-left shadow-sm shadow-terracotta-900/10 transition duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-terracotta-900/15 focus:outline-none focus:ring-4 focus:ring-terracotta-200;
   }
 
   .gallery-item::after {
@@ -281,11 +294,11 @@ img {
   }
 
   .video-panel {
-    @apply overflow-hidden rounded-[1.5rem] border border-terracotta-100 bg-[linear-gradient(145deg,#fffdf8,#f5e6d6)] p-2 shadow-2xl shadow-clay-900/10 sm:rounded-[2rem] sm:p-3;
+    @apply overflow-hidden rounded-[1.5rem] border border-terracotta-100 bg-[linear-gradient(145deg,#fffdf8,#f5e6d6)] p-2 shadow-md shadow-terracotta-900/10 sm:rounded-[2rem] sm:p-3;
   }
 
   .video-panel video {
-    @apply aspect-video w-full rounded-[1.1rem] bg-clay-950 object-cover sm:rounded-[1.5rem];
+    @apply aspect-video w-full rounded-[1.1rem] bg-white object-cover sm:rounded-[1.5rem];
   }
 
   .video-fallback {
@@ -325,7 +338,7 @@ img {
   }
 
   .contact-panel {
-    @apply grid gap-8 rounded-[2rem] border border-terracotta-100 bg-[linear-gradient(145deg,#ffffff,#fff4e8)] p-6 shadow-2xl shadow-clay-900/10 sm:p-8 lg:grid-cols-[1fr_0.8fr] lg:p-10;
+    @apply grid gap-8 rounded-[2rem] border border-terracotta-100 bg-[linear-gradient(145deg,#ffffff,#fff4e8)] p-6 shadow-md shadow-terracotta-900/10 sm:p-8 lg:grid-cols-[1fr_0.8fr] lg:p-10;
   }
 
   .contact-links {
@@ -365,11 +378,11 @@ img {
   }
 
   .lightbox {
-    @apply fixed inset-0 z-50 flex items-center justify-center bg-clay-950/75 p-4 backdrop-blur-sm;
+    @apply fixed inset-0 z-50 flex items-center justify-center bg-clay-950/60 p-4 backdrop-blur-sm;
   }
 
   .lightbox-inner {
-    @apply relative max-h-[92vh] w-full max-w-5xl overflow-hidden rounded-[1.75rem] bg-white p-2 shadow-2xl shadow-clay-950/40;
+    @apply relative max-h-[92vh] w-full max-w-5xl overflow-hidden rounded-[1.75rem] bg-white p-2 shadow-xl shadow-clay-950/20;
   }
 
   .lightbox-inner img {
@@ -377,7 +390,7 @@ img {
   }
 
   .lightbox-close {
-    @apply absolute right-4 top-4 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-clay-950 shadow-lg shadow-clay-950/15 transition hover:bg-terracotta-700 hover:text-white;
+    @apply absolute right-4 top-4 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-clay-950 shadow-md shadow-clay-950/10 transition hover:bg-terracotta-700 hover:text-white;
   }
 }
 

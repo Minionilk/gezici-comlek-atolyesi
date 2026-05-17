@@ -1,4 +1,4 @@
-# Kapalı Devre Otel Seramik Atölyesi Yönetim Portalı
+# Gezici Sanat Atölyesi
 
 ## Kurulum
 

@@ -86,7 +86,7 @@ export default function Login({ onLogin }: LoginProps) {
                 <Hotel className="w-8 h-8 text-white" />
               </div>
               <h1 className="font-serif text-3xl text-charcoal-800">Hoş Geldiniz</h1>
-              <p className="text-charcoal-500 text-sm">Kapalı Devre Seramik Atölye Portalı</p>
+              <p className="text-charcoal-500 text-sm">Gezici Sanat Atölyesi Portalı</p>
             </div>
 
             {/* Role Selection */}
